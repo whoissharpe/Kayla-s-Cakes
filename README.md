@@ -96,64 +96,53 @@ Notes:
 Pushes to `main` deploy automatically once the Pages project is connected.
 Pull requests get their own preview URL.
 
-### First-time Cloudflare setup
+### Cloudflare — already provisioned
 
-These steps need a Cloudflare account and **have not been done yet** — nobody
-in this repo has had access to your Cloudflare account.
+The site is live at **https://kaylas-cakes.pages.dev**.
 
-1. **Create the Pages project.** Cloudflare Dashboard → Workers & Pages →
-   Create → Pages → connect this GitHub repo.
-   - Build command: `npm run build`
-   - Output directory: `dist`
+| Resource | Name |
+|---|---|
+| Pages project | `kaylas-cakes` |
+| D1 database | `kaylas-cakes-leads` |
+| R2 bucket | `kaylas-cakes-photos` (private) |
+| Secrets set | `ADMIN_PASSWORD_HASH`, `SESSION_SECRET` |
 
-2. **Create the database and bucket:**
-   ```bash
-   npx wrangler d1 create kaylas-cakes-leads
-   npx wrangler r2 bucket create kaylas-cakes-photos
-   ```
+The schema is applied and the whole flow is verified against production: an
+order submits, the photo lands in R2, `/admin` signs in, the photo is served
+only with a session, and a key outside `leads/` is refused.
 
-3. **Bind them** in Pages → Settings → Functions → Bindings:
-   - D1 binding named `DB` → `kaylas-cakes-leads`
-   - R2 binding named `PHOTOS` → `kaylas-cakes-photos`
+**`wrangler.toml` is the source of truth for bindings.** `wrangler pages
+deploy` syncs the Pages project config from it, so a binding added in the
+dashboard or via the API is silently removed on the next deploy if it is not
+also in this file. Secrets are the exception — they are managed separately and
+a deploy does not touch them.
 
-   Keep the R2 bucket **private**. Photos are only ever served through
-   `/api/admin/photo/*`, which requires an admin session.
+### Deploying a change
 
-4. **Apply the schema:** `npm run db:remote`
-
-5. **Set the secrets** (Pages → Settings → Environment variables, all
-   encrypted). See `.env.example` for the full list:
-
-   | Name | Required? | Notes |
-   |---|---|---|
-   | `ADMIN_PASSWORD_HASH` | **Yes** | SHA-256 of the `/admin` password — see below |
-   | `SESSION_SECRET` | **Yes** | `openssl rand -hex 32` |
-   | `RESEND_API_KEY` | No | From resend.com |
-   | `NOTIFY_EMAIL` | No | Where new-lead emails go |
-   | `FROM_EMAIL` | No | A verified sender on your Resend domain |
-
-   **Email notification is optional and currently switched off.** With the
-   three Resend variables unset, the site works fully — orders save and show
-   up on `/admin` — they just aren't emailed. Resend needs a domain you
-   control, so this can wait until Kayla picks one. `/admin` shows a note
-   while notifications are off, and puts the new-order count in the browser
-   tab title so a pinned tab does the job instead.
-
-6. **Point the form at production.** Set `orderEndpoint` in `src/data/site.ts`
-   to `''` once the API is on the same domain as the site (same-origin is the
-   intended setup, and an empty string makes the form post to `/api/order`).
-
-### Setting the admin password
-
-Never commit the password. Only its hash is stored, and only in Cloudflare.
+Auto-deploy on push is **not** connected yet — that needs a GitHub OAuth
+handshake in the dashboard, which cannot be done with an API token. Until
+then, deploy manually:
 
 ```bash
-echo -n 'BakedWithLove904' | shasum -a 256
+npm run build
+npx wrangler pages deploy dist --project-name=kaylas-cakes --branch=main
 ```
 
-Paste the resulting hex string as `ADMIN_PASSWORD_HASH`. `BakedWithLove904`
-is a suggestion — swap in whatever Kayla will actually remember, then re-run
-the command.
+Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the
+environment, and Node 22+ (wrangler 4 refuses to run on Node 20).
+
+To wire up auto-deploy instead: Workers & Pages → `kaylas-cakes` → Settings →
+Builds & deployments → **Connect to Git** → pick this repo. Set the build
+command to `npm run build` and the output directory to `dist`.
+
+### Changing the admin password
+
+```bash
+echo -n 'your-new-password' | shasum -a 256
+```
+
+Paste the hash into Workers & Pages → `kaylas-cakes` → Settings → Environment
+variables → `ADMIN_PASSWORD_HASH` (encrypted), then redeploy.
 
 ### Custom domain (manual step)
 
@@ -211,9 +200,11 @@ work.
 
 ### Technical
 
-- [ ] Run Lighthouse on the deployed URL, mobile profile.
+- [ ] Run Lighthouse on https://kaylas-cakes.pages.dev, mobile profile.
 - [ ] Check the hero video loop in Safari specifically.
-- [ ] Send a real test order and confirm the email lands.
+- [ ] Change the admin password from the initial one.
+- [ ] Connect Git for auto-deploy (see above).
+- [ ] Turn on email notification once Kayla has a domain.
 
 ---
 
