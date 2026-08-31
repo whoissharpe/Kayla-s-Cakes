@@ -1,0 +1,22 @@
+# build
+dist/
+.astro/
+node_modules/
+
+# env & secrets — never commit
+.env
+.env.*
+!.env.example
+.dev.vars
+
+# cloudflare
+.wrangler/
+worker/.wrangler/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+.vscode/
+.idea/
