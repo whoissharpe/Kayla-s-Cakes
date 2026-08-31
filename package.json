@@ -8,10 +8,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "worker:dev": "wrangler dev --config worker/wrangler.toml",
-    "worker:deploy": "wrangler deploy --config worker/wrangler.toml",
-    "db:local": "wrangler d1 execute kaylas-cakes-leads --local --file=worker/schema.sql --config worker/wrangler.toml",
-    "db:remote": "wrangler d1 execute kaylas-cakes-leads --remote --file=worker/schema.sql --config worker/wrangler.toml"
+    "db:local": "wrangler d1 execute kaylas-cakes-leads --local --file=db/schema.sql",
+    "db:remote": "wrangler d1 execute kaylas-cakes-leads --remote --file=db/schema.sql",
+    "check:functions": "tsc -p functions/tsconfig.json"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
