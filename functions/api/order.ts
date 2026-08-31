@@ -83,8 +83,14 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       return Response.json({ error: `Up to ${MAX_FILES} photos, please.` }, { status: 400 });
     }
 
+    // R2 may not be enabled on the account yet. Losing the photos is a far
+    // better outcome than losing the enquiry, so carry on without them.
     const photoKeys: string[] = [];
-    for (const [i, file] of files.entries()) {
+    const canStorePhotos = Boolean(env.PHOTOS);
+    if (files.length && !canStorePhotos) {
+      console.warn('Photos submitted but R2 is not bound; saving lead without them');
+    }
+    for (const [i, file] of canStorePhotos ? files.entries() : []) {
       if (file.size > MAX_BYTES) {
         return Response.json({ error: `"${file.name}" is larger than 5 MB.` }, { status: 400 });
       }
@@ -92,7 +98,7 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
         return Response.json({ error: 'Inspiration files must be images.' }, { status: 400 });
       }
       const key = `leads/${id}/${i}-${file.name.replace(/[^\w.\-]/g, '_').slice(0, 80)}`;
-      await env.PHOTOS.put(key, file.stream(), {
+      await env.PHOTOS!.put(key, file.stream(), {
         httpMetadata: { contentType: file.type },
       });
       photoKeys.push(key);

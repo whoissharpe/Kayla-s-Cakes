@@ -1,6 +1,12 @@
 export interface Env {
   DB: D1Database;
-  PHOTOS: R2Bucket;
+  /**
+   * Inspiration photo storage. OPTIONAL — R2 has to be enabled on the
+   * account before the bucket can exist. Without it the order form still
+   * works and leads still save; the photos are simply not kept, and the
+   * form says so rather than failing the submission.
+   */
+  PHOTOS?: R2Bucket;
   /**
    * Email notification is OPTIONAL. Leave these unset and the site works
    * fully — leads still save and still appear on /admin, they just don't

@@ -8,6 +8,8 @@ import { isAuthed, unauthorized } from '../../../_lib/auth';
 export const onRequestGet: PagesFunction<Env> = async ({ request, env, params }) => {
   if (!(await isAuthed(request, env.SESSION_SECRET))) return unauthorized();
 
+  if (!env.PHOTOS) return new Response('Photo storage is not configured', { status: 404 });
+
   const segments = Array.isArray(params.path) ? params.path : [params.path];
   const key = segments.map((s) => decodeURIComponent(String(s))).join('/');
 

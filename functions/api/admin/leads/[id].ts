@@ -45,8 +45,10 @@ export const onRequestDelete: PagesFunction<Env> = async ({ request, env, params
   const row = await env.DB.prepare('SELECT photo_keys FROM leads WHERE id = ?')
     .bind(id).first<{ photo_keys: string }>();
 
-  for (const key of JSON.parse(row?.photo_keys || '[]')) {
-    await env.PHOTOS.delete(key);
+  if (env.PHOTOS) {
+    for (const key of JSON.parse(row?.photo_keys || '[]')) {
+      await env.PHOTOS.delete(key);
+    }
   }
   await env.DB.prepare('DELETE FROM leads WHERE id = ?').bind(id).run();
 

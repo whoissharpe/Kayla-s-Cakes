@@ -20,5 +20,5 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     env.RESEND_API_KEY && env.NOTIFY_EMAIL && env.FROM_EMAIL,
   );
 
-  return Response.json({ leads, emailConfigured });
+  return Response.json({ leads, emailConfigured, photosConfigured: Boolean(env.PHOTOS) });
 };

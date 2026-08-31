@@ -45,6 +45,10 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
         Email notifications are off, so new orders show up here only. Worth a
         look each morning.
       </p>
+      <p class="notice" data-photo-notice hidden>
+        Photo storage isn't switched on yet, so any inspiration photos people
+        attach aren't being kept. Everything else about their order is saved.
+      </p>
 
       <div class="filters">
         <div class="filters__search">
@@ -100,6 +104,7 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
       const data = await res.json();
       leads = data.leads || [];
       document.querySelector('[data-email-notice]').hidden = data.emailConfigured !== false;
+      document.querySelector('[data-photo-notice]').hidden = data.photosConfigured !== false;
       dash.hidden = false;
       render();
     }
