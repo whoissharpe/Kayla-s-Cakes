@@ -2,59 +2,129 @@
 import Section from './Section.astro';
 import { site } from '../data/site';
 ---
-<Section id="about" eyebrow="About" title="Hi, I'm Kayla">
-  <div class="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
-    <div class="space-y-5 text-base leading-relaxed text-ink/80">
-      <p>
-        I bake out of my own kitchen here in {site.city}, which means every order
-        gets made one at a time, by me. No production line, no case of leftovers
-        from yesterday — just the cake you asked for, on the day you need it.
-      </p>
-      <p>
-        I started because I liked making my kids' birthday cakes more than I
-        liked buying them. That hasn't really changed. The best part of this is
-        still watching somebody's face when they see the thing they described to
-        me actually sitting on the table.
-      </p>
-      <p>
-        If you have an idea, send it over. If you have half an idea, send that
-        too — most of my favorite cakes started as a blurry photo and a "can you
-        do something like this?"
-      </p>
+<Section id="about" eyebrow="About" title="Meet Kayla" tone="mint">
+  <div class="about">
+    <div class="about__media">
+      <img
+        src="/brand/logo-lockup.webp"
+        alt={`${site.name} — ${site.tagline}`}
+        width="440" height="440"
+        loading="lazy"
+        class="about__badge"
+      />
     </div>
 
-    <aside class="rounded-card border border-mint-300/70 bg-mint-100 p-7">
-      <h3 class="text-xs font-semibold tracking-widest text-mint-800 uppercase">
-        Good to know
-      </h3>
-      <dl class="mt-4 space-y-4 text-sm">
+    <div class="about__copy">
+      <p class="about__lead">
+        Hello! I'm Kayla, the cake artist behind {site.name}. I treat every
+        order as its own canvas of edible art.
+      </p>
+      <p>
+        Whether it's a whimsical vintage heart birthday cake with intricate
+        piping, or a multi-tiered wedding display with handcrafted sugar
+        flowers, I bake every single tier from scratch — real butter, vanilla
+        bean and Belgian chocolate. No boxed mixes, no artificial shortening,
+        ever.
+      </p>
+      <p>
+        We'll talk through colors and details together before I start, so what
+        arrives is what you pictured. If you have half an idea and a blurry
+        photo, that's plenty to begin with — most of my favorite cakes started
+        exactly that way.
+      </p>
+
+      <ul class="about__points">
+        {site.differentiators.map((d) => <li>{d}</li>)}
+      </ul>
+
+      <dl class="about__facts">
         <div>
-          <dt class="font-medium">Cottage food operation</dt>
-          <dd class="mt-1 text-ink/75">
-            {site.name} is a Florida cottage food operation, which means Kayla
-            sells directly to you from her own home kitchen.
-          </dd>
+          <dt>Where</dt>
+          <dd>{site.serviceArea}</dd>
         </div>
         <div>
-          <dt class="font-medium">Where</dt>
-          <dd class="mt-1 text-ink/75">{site.serviceArea}</dd>
-        </div>
-        <div>
-          <dt class="font-medium">Getting in touch</dt>
-          <dd class="mt-1 text-ink/75">
-            <a class="text-mint-800 underline underline-offset-2" href={site.phoneHref}>
-              Text {site.phone}
-            </a>
-            {' '}or{' '}
-            <a class="text-mint-800 underline underline-offset-2" href={`mailto:${site.email}`}>
-              email
-            </a>.
+          <dt>Get in touch</dt>
+          <dd>
+            <a href={site.phoneHref}>Text {site.phone}</a>
+            <span aria-hidden="true"> · </span>
+            <a href={`mailto:${site.email}`}>Email</a>
           </dd>
         </div>
       </dl>
-      <p class="mt-5 border-t border-mint-300 pt-4 text-xs leading-relaxed text-ink/65">
-        {site.cottageDisclosure}
-      </p>
-    </aside>
+    </div>
   </div>
 </Section>
+
+<style>
+  .about { display: grid; gap: 3rem; align-items: start; }
+  @media (min-width: 64rem) {
+    .about { grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr); gap: 4.5rem; }
+  }
+
+  .about__media { display: flex; justify-content: center; }
+  .about__badge {
+    width: min(20rem, 70%);
+    height: auto;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 4px 14px rgb(18 63 56 / 0.1), 0 30px 70px rgb(18 63 56 / 0.16);
+  }
+  @media (min-width: 64rem) {
+    .about__badge { width: 100%; position: sticky; top: 7rem; }
+  }
+
+  .about__copy { display: grid; gap: 1.15rem; }
+  .about__copy p { font-size: 1rem; line-height: 1.75; color: rgb(20 20 20 / 0.8); }
+  .about__lead {
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 2.2vw, 1.45rem) !important;
+    line-height: 1.5 !important;
+    color: var(--color-ink) !important;
+  }
+
+  .about__points { margin-top: 0.5rem; display: grid; gap: 0.75rem; }
+  .about__points li {
+    position: relative;
+    padding-left: 1.9rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 500;
+    color: var(--color-mint-800);
+  }
+  .about__points li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 50%;
+    background: var(--color-mint-800);
+    /* checkmark, drawn rather than a font glyph */
+    -webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/0.85rem no-repeat,
+             linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M20 6 9 17l-5-5' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></svg>") center/0.85rem no-repeat,
+         linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+
+  .about__facts {
+    margin-top: 1.25rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid rgb(34 104 93 / 0.2);
+    display: grid;
+    gap: 1.25rem;
+  }
+  @media (min-width: 40rem) { .about__facts { grid-template-columns: 1fr 1fr; } }
+  .about__facts dt {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-mint-800);
+  }
+  .about__facts dd { margin-top: 0.4rem; font-size: 0.95rem; color: rgb(20 20 20 / 0.8); }
+  .about__facts a { color: var(--color-mint-800); text-decoration: underline; text-underline-offset: 3px; }
+  .about__facts a:hover { color: var(--color-ink); }
+</style>

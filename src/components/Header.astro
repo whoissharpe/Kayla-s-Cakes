@@ -1,47 +1,160 @@
 ---
 import { site } from '../data/site';
 
+interface Props {
+  /** True only on pages with a full-bleed hero behind the header. */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
 const links = [
   { href: '/#what-she-makes', label: 'What she makes' },
   { href: '/#gallery', label: 'Gallery' },
-  { href: '/#how-it-works', label: 'How ordering works' },
+  { href: '/#how-it-works', label: 'How it works' },
   { href: '/#about', label: 'About' },
 ];
 ---
 
-<header class="sticky top-0 z-50 border-b border-mint-300/50 bg-cream/85 backdrop-blur-md">
-  <nav aria-label="Main" class="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
-    <a href="/" class="flex shrink-0 items-center gap-2.5">
-      <img
-        src="/brand/logo-mark.webp"
-        alt=""
-        width="40"
-        height="40"
-        class="h-9 w-9 object-contain sm:h-10 sm:w-10"
-      />
-      <span class="font-display text-lg font-semibold text-ink sm:text-xl">
+<!-- Sentinel: when it scrolls out of view the header goes solid. Cheaper and
+     smoother than a scroll listener. Only needed where the header overlays
+     a hero; elsewhere it is solid from the start. -->
+{overlay && <div data-header-sentinel aria-hidden="true"></div>}
+
+<header class="hdr" data-header data-solid={overlay ? undefined : ''}>
+  <nav aria-label="Main" class="hdr__inner">
+    <a href="/" class="hdr__brand">
+      <img src="/brand/logo-mark.webp" alt="" width="52" height="52" class="hdr__mark" />
+      <span class="hdr__name">
         {site.name}
+        <span class="hdr__tag">{site.tagline}</span>
       </span>
     </a>
 
-    <ul class="ml-auto hidden items-center gap-7 lg:flex">
-      {links.map((l) => (
-        <li>
-          <a
-            href={l.href}
-            class="text-sm text-ink/75 transition-colors hover:text-mint-800"
-          >
-            {l.label}
-          </a>
-        </li>
-      ))}
+    <ul class="hdr__links">
+      {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
     </ul>
 
-    <a
-      href="/order"
-      class="ml-auto rounded-btn bg-mint-800 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-ink lg:ml-0"
-    >
-      Order a cake
-    </a>
+    <div class="hdr__actions">
+      <a href={site.phoneHref} class="hdr__phone">Text {site.phone}</a>
+      <a href="/order" class="hdr__cta">Order a cake</a>
+    </div>
   </nav>
 </header>
+
+<script is:inline>
+  (() => {
+    const hdr = document.querySelector('[data-header]');
+    const sentinel = document.querySelector('[data-header-sentinel]');
+    if (!hdr || !sentinel) return;
+    new IntersectionObserver(
+      ([e]) => hdr.toggleAttribute('data-solid', !e.isIntersecting),
+      { rootMargin: '0px' },
+    ).observe(sentinel);
+  })();
+</script>
+
+<style>
+  [data-header-sentinel] { position: absolute; top: 0; height: 1px; width: 1px; }
+
+  .hdr {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    background: rgb(253 251 247 / 0.72);
+    backdrop-filter: blur(10px);
+    transition: background-color 300ms ease, box-shadow 300ms ease;
+  }
+  /* The hero is cream too, so the header only needs to separate once you
+     scroll past it — hence a shadow rather than a colour change. */
+  .hdr[data-solid] {
+    background: rgb(253 251 247 / 0.94);
+    box-shadow: 0 1px 0 rgb(34 104 93 / 0.1), 0 8px 30px rgb(18 63 56 / 0.06);
+  }
+
+  .hdr__inner {
+    max-width: 76rem;
+    margin-inline: auto;
+    padding: 0.9rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  @media (min-width: 64rem) { .hdr__inner { padding: 1rem 2.5rem; } }
+
+  .hdr__brand { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+  /* The mark sits on white, so round it into a coin — reads as deliberate on
+     both the dark hero and the light solid header. */
+  .hdr__mark {
+    width: 2.9rem;
+    height: 2.9rem;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 2px 8px rgb(11 42 37 / 0.18);
+    transition: width 300ms ease, height 300ms ease;
+  }
+  @media (min-width: 64rem) { .hdr__mark { width: 3.4rem; height: 3.4rem; } }
+  .hdr[data-solid] .hdr__mark { width: 2.6rem; height: 2.6rem; }
+
+  .hdr__name {
+    display: flex;
+    flex-direction: column;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.05;
+    color: var(--color-ink);
+  }
+  @media (min-width: 64rem) { .hdr__name { font-size: 1.3rem; } }
+
+  .hdr__tag {
+    font-family: var(--font-sans);
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-mint-800);
+    margin-top: 0.22rem;
+  }
+
+  .hdr__links {
+    display: none;
+    margin-left: auto;
+    gap: 1.9rem;
+  }
+  @media (min-width: 68rem) { .hdr__links { display: flex; } }
+  .hdr__links a {
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: rgb(20 20 20 / 0.78);
+    transition: color 200ms ease;
+  }
+  .hdr__links a:hover { color: var(--color-mint-800); }
+
+  .hdr__actions { display: flex; align-items: center; gap: 1rem; margin-left: auto; }
+  @media (min-width: 68rem) { .hdr__actions { margin-left: 0; } }
+
+  .hdr__phone {
+    display: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--color-mint-800);
+  }
+  @media (min-width: 48rem) { .hdr__phone { display: inline; } }
+  .hdr__phone:hover { color: var(--color-ink); }
+
+  .hdr__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.85rem;
+    padding: 0 1.4rem;
+    border-radius: var(--radius-btn);
+    background: var(--color-mint-800);
+    color: #fff;
+    font-size: 0.92rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: background-color 200ms ease;
+  }
+  .hdr__cta:hover { background: var(--color-mint-950); }
+</style>

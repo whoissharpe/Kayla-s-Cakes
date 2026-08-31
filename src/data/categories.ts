@@ -21,6 +21,13 @@ export const categories: Category[] = [
     image: '/brand/categories/custom-cakes.webp',
   },
   {
+    slug: 'wedding-cakes',
+    title: 'Wedding cakes',
+    blurb:
+      'Multi-tiered displays with handcrafted sugar flowers, every tier baked from scratch.',
+    image: '/brand/categories/wedding-cakes.webp',
+  },
+  {
     slug: 'cupcakes',
     title: 'Cupcakes',
     blurb: 'By the dozen, decorated to match the rest of the party.',

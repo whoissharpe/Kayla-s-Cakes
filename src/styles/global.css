@@ -12,7 +12,8 @@
      mint-800  on cream     6.34  links, buttons (as bg w/ white text: 6.55)
      mint-600  on cream     2.86  FAILS — strokes/borders/hover fills ONLY, never text
      gold-500  on cream     2.32  FAILS — thin rules + small marks only
-     gold-500  on ink       7.68  the ONLY place gold may be used as text
+     gold-500  on ink       7.68  gold as text: on ink, or on mint-900/950
+     white     on mint-900 11.71  hero scrim, dark sections
      blush / coral on cream 2.73 / 2.44  FAIL — decorative accents only, never text
 --------------------------------------------------------------------------- */
 @theme {
@@ -20,6 +21,11 @@
   --color-mint-300: #AFE9DF;
   --color-mint-600: #3FA697;
   --color-mint-800: #22685D;
+  /* Deeper shades of the same hue, for dark sections and image scrims.
+     white on mint-900 = 11.71, on mint-950 = 15.30
+     gold-500 on mint-900 = 4.88 — the one place gold works as body text */
+  --color-mint-900: #123F38;
+  --color-mint-950: #0B2A25;
   --color-gold-500: #C9A24B;
   --color-ink:      #141414;
   --color-cream:    #FDFBF7;
@@ -118,6 +124,10 @@
     color: var(--color-mint-800);
     pointer-events: none;
   }
+
+  /* Pages without a full-bleed hero must clear the fixed header */
+  .has-fixed-header { padding-top: 4.9rem; }
+  @media (min-width: 64rem) { .has-fixed-header { padding-top: 5.6rem; } }
 
   /* Thin gold rule — decorative, aria-hidden at call sites */
   .rule-gold {

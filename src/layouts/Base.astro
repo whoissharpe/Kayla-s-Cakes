@@ -9,10 +9,12 @@ interface Props {
   description: string;
   /** Omit the marketing chrome (used by /admin). */
   bare?: boolean;
+  /** Let the header sit transparent over a full-bleed hero. */
+  heroOverlay?: boolean;
   noindex?: boolean;
 }
 
-const { title, description, bare = false, noindex = false } = Astro.props;
+const { title, description, bare = false, noindex = false, heroOverlay = false } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const ogImage = new URL('/brand/og.jpg', Astro.site).href;
 
@@ -85,8 +87,8 @@ const schema = {
     </script>
 
     <a class="skip-link" href="#main">Skip to content</a>
-    {!bare && <Header />}
-    <main id="main">
+    {!bare && <Header overlay={heroOverlay} />}
+    <main id="main" class:list={[!bare && !heroOverlay && 'has-fixed-header']}>
       <slot />
     </main>
     {!bare && <Footer />}
