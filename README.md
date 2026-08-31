@@ -119,21 +119,31 @@ a deploy does not touch them.
 
 ### Deploying a change
 
-Auto-deploy on push is **not** connected yet — that needs a GitHub OAuth
-handshake in the dashboard, which cannot be done with an API token. Until
-then, deploy manually:
+**Auto-deploy is connected.** Pushing to `claude/kaylascakes-website-snt0pi`
+builds and deploys to production automatically; every other branch and PR gets
+its own preview URL.
+
+Cloudflare runs `npm run build` and publishes `dist`. `.node-version` pins the
+build image to Node 22 — Astro 5, Vite 8 and wrangler 4 all refuse to run on
+Node 20.
+
+> **After the PR merges, move production to `main`.** The production branch is
+> currently the feature branch, because `main` has no site on it yet and
+> pointing production there would deploy an empty repo. Once merged:
+> Workers & Pages → `kaylas-cakes` → Settings → Builds & deployments →
+> Production branch → `main`.
+
+To deploy by hand (rarely needed now):
 
 ```bash
 npm run build
-npx wrangler pages deploy dist --project-name=kaylas-cakes --branch=main
+npx wrangler pages deploy dist --project-name=kaylas-cakes
 ```
 
-Requires `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the
-environment, and Node 22+ (wrangler 4 refuses to run on Node 20).
-
-To wire up auto-deploy instead: Workers & Pages → `kaylas-cakes` → Settings →
-Builds & deployments → **Connect to Git** → pick this repo. Set the build
-command to `npm run build` and the output directory to `dist`.
+Note the project is Git-connected, and a Git-connected project cannot be
+converted back to direct upload — or vice versa. Changing that means deleting
+and recreating the project, which is what was done here to attach the repo,
+so the bindings and secrets had to be re-applied afterwards.
 
 ### Changing the admin password
 
