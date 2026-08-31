@@ -56,6 +56,18 @@ behave as described.
 
 ---
 
+## Getting Kayla's photos
+
+Her Instagram photos are hers to use, but scraping Instagram is against
+their Terms of Use, so don't. The supported route is Instagram's own export:
+
+**Instagram app → Settings → Accounts Centre → Your information and
+permissions → Download your information.** Pick her account, choose Photos,
+and request it. It arrives as a zip of every image at original quality,
+usually within a few hours.
+
+Unzip, pick the good ones, and follow the steps below.
+
 ## Adding gallery photos
 
 Two steps, no components to touch.
@@ -194,9 +206,12 @@ where a fact wasn't available it's marked and left for Kayla to confirm.**
 
 ### Must replace
 
-- [ ] **Category card images** (`public/brand/categories/*`). Generated
-      placeholders showing generic cakes in the brand palette. Replace with
-      Kayla's real photos.
+- [ ] **Category card photos.** The cards currently render a numbered
+      watercolour panel instead of a photo — deliberately, because a
+      generated cake photo reads as fake and undersells real work. To add a
+      real one, drop the file in `public/brand/categories/` and set `image`
+      on that category in `src/data/categories.ts`. The panel disappears on
+      its own.
 - [ ] **Gallery photos** (`public/gallery/*`). Empty — the six entries in
       `src/data/gallery.json` are placeholders and render a visible
       "Photo coming soon" panel until real files are added.
