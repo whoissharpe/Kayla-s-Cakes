@@ -1,9 +1,10 @@
 # Cloudflare Pages configuration.
 #
-# The bindings below are what functions/ expects. In production these are also
-# configured in the Pages dashboard (Settings -> Functions -> Bindings); this
-# file is what makes `wrangler pages dev` and `wrangler d1 execute` work
-# locally with the same names.
+# IMPORTANT: `wrangler pages deploy` syncs the Pages project's bindings from
+# this file. Anything set in the dashboard or via the API that is absent here
+# gets removed on the next deploy, so this file is the source of truth for
+# bindings. Secrets are the exception — they are managed separately and are
+# not touched by a deploy.
 
 name = "kaylas-cakes"
 compatibility_date = "2026-08-01"
@@ -12,9 +13,7 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "DB"
 database_name = "kaylas-cakes-leads"
-# Replace with the real id printed by `wrangler d1 create kaylas-cakes-leads`.
-# Only used for --remote commands; local dev ignores it.
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "16dd99d3-5f68-4a1e-95ea-2e4d9186f8b5"
 
 [[r2_buckets]]
 binding = "PHOTOS"
