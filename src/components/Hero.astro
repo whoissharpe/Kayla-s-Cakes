@@ -29,15 +29,18 @@ import { site } from '../data/site';
            prefers-reduced-motion. The video source is attached by the script
            below ONLY when motion is allowed, so reduced-motion visitors and
            save-data connections never download it at all. -->
-      <img
-        src="/brand/hero-cake.webp"
-        alt="A mint buttercream cake on a decorating turntable with the Kayla's Cakes logo piped on top in icing"
-        class="hero__poster"
-        width="1600"
-        height="900"
-        fetchpriority="high"
-        decoding="async"
-      />
+      <picture>
+        <source srcset="/brand/hero-cake.webp" type="image/webp" />
+        <img
+          src="/brand/hero-cake.jpg"
+          alt="A mint buttercream cake on a decorating turntable with the Kayla's Cakes logo piped on top in icing"
+          class="hero__poster"
+          width="1600"
+          height="900"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </picture>
       <video
         class="hero__video"
         data-hero-video
@@ -208,6 +211,8 @@ import { site } from '../data/site';
     overflow: hidden;
     box-shadow: 0 2px 4px rgb(20 20 20 / 0.04), 0 24px 60px rgb(34 104 93 / 0.16);
   }
+
+  .hero__media picture { display: block; }
 
   .hero__poster,
   .hero__video {
