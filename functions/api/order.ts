@@ -125,11 +125,18 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     await env.DB.prepare('INSERT INTO submissions (ip, created_at) VALUES (?, ?)')
       .bind(ip, Date.now()).run();
 
-    // --- Notify Kayla. A mail failure must not lose the lead. -------------
-    try {
-      await sendNotification(env, lead, photoKeys.length);
-    } catch (err) {
-      console.error('Lead saved but notification failed', lead.id, err);
+    // --- Notify Kayla, if email is configured. -----------------------------
+    // The lead is already saved at this point. Email is a convenience on top,
+    // never a dependency: whether it is switched off or simply fails, the
+    // order is safe and visible on /admin either way.
+    if (isEmailConfigured(env)) {
+      try {
+        await sendNotification(env, lead, photoKeys.length);
+      } catch (err) {
+        console.error('Lead saved but notification failed', lead.id, err);
+      }
+    } else {
+      console.log('Lead saved; email notification is not configured', lead.id);
     }
 
     return Response.json({ ok: true, id });
@@ -139,12 +146,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   }
 };
 
+/** All three must be present before we try to send anything. */
+function isEmailConfigured(env: Env): boolean {
+  return Boolean(env.RESEND_API_KEY && env.NOTIFY_EMAIL && env.FROM_EMAIL);
+}
+
 async function sendNotification(
   env: Env,
   lead: Record<string, string>,
   photoCount: number,
 ) {
-  if (!env.RESEND_API_KEY) throw new Error('RESEND_API_KEY not configured');
 
   const row = (label: string, value: string) =>
     value
@@ -186,7 +197,7 @@ async function sendNotification(
     },
     body: JSON.stringify({
       from: `Kayla's Cakes <${env.FROM_EMAIL}>`,
-      to: [env.NOTIFY_EMAIL],
+      to: [env.NOTIFY_EMAIL!],
       reply_to: reply || undefined,
       subject: `New order: ${lead.name} — ${lead.item_type} for ${lead.event_date}`,
       html,

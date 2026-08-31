@@ -10,10 +10,14 @@ what they want — the date, the flavor, the size, the theme, and photos of
 whatever inspired them. It asks for exactly the same things your Instagram
 post asks for, so nothing gets missed.
 
-The moment somebody sends that form, two things happen:
+The moment somebody sends that form, the order shows up on your private
+orders page.
 
-1. **You get an email** with all their details laid out neatly.
-2. **The order shows up on your private orders page.**
+**Email alerts aren't switched on yet.** They need a domain name of your own
+(like kaylascakes.com) before they can work, so for now the orders page is the
+only place new orders appear. Keep it open in a pinned tab — the number of new
+orders shows right in the tab, so you can see at a glance without clicking.
+Once you pick a domain we'll turn the emails on.
 
 ## Your orders page
 

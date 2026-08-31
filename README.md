@@ -110,13 +110,20 @@ in this repo has had access to your Cloudflare account.
 5. **Set the secrets** (Pages → Settings → Environment variables, all
    encrypted). See `.env.example` for the full list:
 
-   | Name | Notes |
-   |---|---|
-   | `RESEND_API_KEY` | From resend.com |
-   | `NOTIFY_EMAIL` | Where new-lead emails go |
-   | `FROM_EMAIL` | A verified sender on your Resend domain |
-   | `ADMIN_PASSWORD_HASH` | SHA-256 of the `/admin` password — see below |
-   | `SESSION_SECRET` | `openssl rand -hex 32` |
+   | Name | Required? | Notes |
+   |---|---|---|
+   | `ADMIN_PASSWORD_HASH` | **Yes** | SHA-256 of the `/admin` password — see below |
+   | `SESSION_SECRET` | **Yes** | `openssl rand -hex 32` |
+   | `RESEND_API_KEY` | No | From resend.com |
+   | `NOTIFY_EMAIL` | No | Where new-lead emails go |
+   | `FROM_EMAIL` | No | A verified sender on your Resend domain |
+
+   **Email notification is optional and currently switched off.** With the
+   three Resend variables unset, the site works fully — orders save and show
+   up on `/admin` — they just aren't emailed. Resend needs a domain you
+   control, so this can wait until Kayla picks one. `/admin` shows a note
+   while notifications are off, and puts the new-order count in the browser
+   tab title so a pinned tab does the job instead.
 
 6. **Point the form at production.** Set `orderEndpoint` in `src/data/site.ts`
    to `''` once the API is on the same domain as the site (same-origin is the

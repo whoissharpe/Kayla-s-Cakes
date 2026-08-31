@@ -41,6 +41,11 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
         </div>
       </header>
 
+      <p class="notice" data-email-notice hidden>
+        Email notifications are off, so new orders show up here only. Worth a
+        look each morning.
+      </p>
+
       <div class="filters">
         <div class="filters__search">
           <label for="search" class="sr-only">Search orders</label>
@@ -94,6 +99,7 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
       if (res.status === 401) { gate.hidden = false; return; }
       const data = await res.json();
       leads = data.leads || [];
+      document.querySelector('[data-email-notice]').hidden = data.emailConfigured !== false;
       dash.hidden = false;
       render();
     }
@@ -153,6 +159,10 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
       const nNew = leads.filter((l) => l.status === 'new').length;
       summary.textContent =
         `${leads.length} total · ${nNew} new` + (rows.length !== leads.length ? ` · ${rows.length} shown` : '');
+
+      // Surfaced in the tab title so a pinned tab acts as the notification
+      // that email would otherwise provide.
+      document.title = nNew ? `(${nNew}) Orders — Kayla's Cakes` : "Orders — Kayla's Cakes";
 
       empty.hidden = rows.length > 0;
       list.innerHTML = rows.map(card).join('');
@@ -342,6 +352,17 @@ import { LEAD_STATUSES } from '../../functions/_lib/types';
   }
   .chip:hover { border-color: var(--color-mint-600); }
   .chip.is-on { background: var(--color-mint-800); color: #fff; }
+
+  .notice {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--color-gold-500);
+    border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+    background: var(--color-cream);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgb(20 20 20 / 0.75);
+  }
 
   .leads { display: grid; gap: 1rem; }
   .empty { padding: 3rem 0; text-align: center; color: rgb(20 20 20 / 0.55); }

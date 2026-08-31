@@ -14,5 +14,11 @@ export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {
     photo_keys: JSON.parse(r.photo_keys || '[]'),
   }));
 
-  return Response.json({ leads });
+  // Tells the dashboard whether to expect emails, so Kayla is never left
+  // wondering why nothing landed in her inbox.
+  const emailConfigured = Boolean(
+    env.RESEND_API_KEY && env.NOTIFY_EMAIL && env.FROM_EMAIL,
+  );
+
+  return Response.json({ leads, emailConfigured });
 };
