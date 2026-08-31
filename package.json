@@ -10,7 +10,8 @@
     "check": "astro check",
     "db:local": "wrangler d1 execute kaylas-cakes-leads --local --file=db/schema.sql",
     "db:remote": "wrangler d1 execute kaylas-cakes-leads --remote --file=db/schema.sql",
-    "check:functions": "tsc -p functions/tsconfig.json"
+    "check:functions": "tsc -p functions/tsconfig.json",
+    "smoke": "./scripts/smoke-test.sh"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",

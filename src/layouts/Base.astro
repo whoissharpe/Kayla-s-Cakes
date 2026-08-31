@@ -68,6 +68,20 @@ const schema = {
     )}
   </head>
   <body>
+    <script is:inline>
+      // Images 404 until the generated assets land (see ASSETS.md). Mark them
+      // so CSS can show a branded placeholder instead of a broken-image icon.
+      // Capture phase, because 'error' on <img> does not bubble.
+      document.addEventListener(
+        'error',
+        (e) => {
+          const el = e.target;
+          if (el instanceof HTMLImageElement) el.dataset.missing = '';
+        },
+        true,
+      );
+    </script>
+
     <a class="skip-link" href="#main">Skip to content</a>
     {!bare && <Header />}
     <main id="main">

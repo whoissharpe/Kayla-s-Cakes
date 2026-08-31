@@ -84,6 +84,41 @@
   }
   .skip-link:focus { left: 0; }
 
+  /*
+   * Missing-image state. Until the generated assets are dropped in (see
+   * ASSETS.md) these files 404, and a page full of broken-image icons reads
+   * as "this site is broken" rather than "these photos aren't in yet".
+   * Fade the image out and let a calm branded panel stand in its place.
+   */
+  img[data-missing] {
+    opacity: 0;
+  }
+  :has(> img[data-missing]),
+  :has(> picture > img[data-missing]) {
+    position: relative;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--color-mint-100) 0 12px,
+      #fff 12px 24px
+    );
+  }
+  :has(> img[data-missing])::after,
+  :has(> picture > img[data-missing])::after {
+    content: 'Photo coming soon';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-mint-800);
+    pointer-events: none;
+  }
+
   /* Thin gold rule — decorative, aria-hidden at call sites */
   .rule-gold {
     height: 1px;
