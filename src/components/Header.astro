@@ -23,7 +23,7 @@ const links = [
 <header class="hdr" data-header data-solid={overlay ? undefined : ''}>
   <nav aria-label="Main" class="hdr__inner">
     <a href="/" class="hdr__brand">
-      <img src="/brand/logo-mark.webp" alt="" width="52" height="52" class="hdr__mark" />
+      <img src="/brand/logo-mark-cutout.webp" alt="" width="52" height="52" class="hdr__mark" />
       <span class="hdr__name">
         {site.name}
         <span class="hdr__tag">{site.tagline}</span>
@@ -83,14 +83,10 @@ const links = [
 
   .hdr__brand { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
 
-  /* The mark sits on white, so round it into a coin — reads as deliberate on
-     both the dark hero and the light solid header. */
   .hdr__mark {
     width: 2.9rem;
     height: 2.9rem;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 2px 8px rgb(11 42 37 / 0.18);
+    object-fit: contain;
     transition: width 300ms ease, height 300ms ease;
   }
   @media (min-width: 64rem) { .hdr__mark { width: 3.4rem; height: 3.4rem; } }

@@ -10,7 +10,7 @@ const year = new Date().getFullYear();
   <div class="ftr__inner">
     <div class="ftr__top">
       <a href="/" class="ftr__brand">
-        <img src="/brand/logo-lockup.webp" alt={`${site.name} — ${site.tagline}`}
+        <img src="/brand/logo-lockup-cutout.webp" alt={`${site.name} — ${site.tagline}`}
              width="200" height="200" loading="lazy" class="ftr__logo" />
       </a>
 
@@ -96,11 +96,8 @@ const year = new Date().getFullYear();
   }
 
   .ftr__logo {
-    width: clamp(7.5rem, 16vw, 11rem);
+    width: clamp(8rem, 17vw, 12rem);
     height: auto;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 20px 50px rgb(0 0 0 / 0.3);
   }
 
   .ftr__pitch { display: grid; gap: 1.25rem; justify-items: start; }

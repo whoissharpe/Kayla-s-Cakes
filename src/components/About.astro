@@ -6,7 +6,7 @@ import { site } from '../data/site';
   <div class="about">
     <div class="about__media">
       <img
-        src="/brand/logo-lockup.webp"
+        src="/brand/logo-lockup-cutout.webp"
         alt={`${site.name} — ${site.tagline}`}
         width="440" height="440"
         loading="lazy"
@@ -63,11 +63,8 @@ import { site } from '../data/site';
 
   .about__media { display: flex; justify-content: center; }
   .about__badge {
-    width: min(20rem, 70%);
+    width: min(21rem, 78%);
     height: auto;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 4px 14px rgb(18 63 56 / 0.1), 0 30px 70px rgb(18 63 56 / 0.16);
   }
   @media (min-width: 64rem) {
     .about__badge { width: 100%; position: sticky; top: 7rem; }

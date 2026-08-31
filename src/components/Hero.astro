@@ -25,7 +25,7 @@ import { site } from '../data/site';
 
   <div class="hero__inner">
     <img
-      src="/brand/logo-lockup.webp"
+      src="/brand/logo-lockup-cutout.webp"
       alt={`${site.name} — ${site.tagline}`}
       class="hero__badge"
       width="360" height="360"
@@ -152,12 +152,12 @@ import { site } from '../data/site';
   @media (min-width: 64rem) { .hero__inner > * { max-width: 36rem; } }
 
   .hero__badge {
-    width: clamp(6.5rem, 13vw, 10.5rem);
+    width: clamp(7rem, 14vw, 11.5rem);
     height: auto;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 2px 8px rgb(18 63 56 / 0.08), 0 18px 44px rgb(18 63 56 / 0.14);
     margin-bottom: 1.35rem;
+    /* No ring, no plate — the lockup is transparent and sits directly on
+       the page. Anything added here reads as a second border against the
+       logo's own circular artwork. */
   }
 
   .hero__eyebrow {
