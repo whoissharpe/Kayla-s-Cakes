@@ -195,21 +195,19 @@ where a fact wasn't available it's marked and left for Kayla to confirm.**
 
 ### Must replace
 
-- [ ] **`public/brand/logo-lockup.png` and `logo-mark.png`.** The generated
-      logo files need to be downloaded from Higgsfield and dropped in. The
-      site references these paths and will show broken images until then.
 - [ ] **Category card images** (`public/brand/categories/*`). Generated
-      placeholders. Replace with Kayla's real photos.
-- [ ] **Gallery photos** (`public/gallery/*`). All six are placeholders and
-      carry a visible "Placeholder" badge.
-- [ ] **`public/brand/og.png`.** Generated placeholder social share image.
+      placeholders showing generic cakes in the brand palette. Replace with
+      Kayla's real photos.
+- [ ] **Gallery photos** (`public/gallery/*`). Empty — the six entries in
+      `src/data/gallery.json` are placeholders and render a visible
+      "Photo coming soon" panel until real files are added.
 
-### Generated brand assets (intentional, not placeholders)
+### Already done
 
-- `public/brand/hero-cake.webp` and `hero-cake-spin.mp4` — the spinning
-  turntable hero. Generated imagery, kept deliberately as a brand image. It
-  is not a photograph of Kayla's work.
-- `public/brand/favicon.svg` — derived from the logo mark.
+Logo, hero still and video, OG image and icons are all committed and wired up.
+See `ASSETS.md` for the inventory and the provenance note. The hero is
+generated imagery kept deliberately as a brand image, not a photo of Kayla's
+work.
 
 ### Technical
 
