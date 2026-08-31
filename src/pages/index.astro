@@ -1,0 +1,50 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Categories from '../components/Categories.astro';
+import Section from '../components/Section.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import HowItWorks from '../components/HowItWorks.astro';
+import About from '../components/About.astro';
+import OrderForm from '../components/OrderForm.astro';
+import { site } from '../data/site';
+---
+<Base
+  title={`${site.name} — Custom cakes in ${site.city}, ${site.state}`}
+  description={site.positioning}
+>
+  <Hero />
+  <Categories />
+
+  <Section
+    id="gallery"
+    eyebrow="Gallery"
+    title="Recent bakes"
+    lede="A few of the cakes, cupcakes, and sets that have gone out the door lately."
+  >
+    <GalleryGrid limit={6} />
+    <div class="mt-10">
+      <a
+        href="/gallery"
+        class="inline-flex min-h-12 items-center rounded-btn border border-mint-600 bg-cream px-6 font-medium text-mint-800 transition-colors hover:bg-mint-100"
+      >
+        See the full gallery
+      </a>
+    </div>
+  </Section>
+
+  <HowItWorks />
+  <About />
+
+  <Section
+    id="order"
+    eyebrow="Order"
+    title="Tell her about your cake"
+    lede="Fill this in with whatever you know so far. Half an idea is plenty to start with."
+    tone="mint"
+  >
+    <div class="rounded-card bg-cream p-6 sm:p-9">
+      <OrderForm />
+    </div>
+  </Section>
+</Base>

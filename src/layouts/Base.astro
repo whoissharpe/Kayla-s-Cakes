@@ -1,0 +1,78 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Omit the marketing chrome (used by /admin). */
+  bare?: boolean;
+  noindex?: boolean;
+}
+
+const { title, description, bare = false, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL('/brand/og.png', Astro.site).href;
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Bakery',
+  name: site.name,
+  description: site.positioning,
+  image: ogImage,
+  email: site.email,
+  telephone: site.phone,
+  url: Astro.site?.href,
+  founder: { '@type': 'Person', name: site.owner },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.city,
+    addressRegion: site.state,
+    addressCountry: 'US',
+  },
+  areaServed: { '@type': 'City', name: `${site.city}, ${site.state}` },
+  sameAs: [site.instagram, site.facebook],
+  priceRange: '$$',
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#DFF6F1" />
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+
+    {!noindex && (
+      <script
+        type="application/ld+json"
+        set:html={JSON.stringify(schema)}
+      />
+    )}
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    {!bare && <Header />}
+    <main id="main">
+      <slot />
+    </main>
+    {!bare && <Footer />}
+  </body>
+</html>

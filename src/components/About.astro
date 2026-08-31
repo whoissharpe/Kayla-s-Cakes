@@ -1,0 +1,60 @@
+---
+import Section from './Section.astro';
+import { site } from '../data/site';
+---
+<Section id="about" eyebrow="About" title="Hi, I'm Kayla">
+  <div class="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+    <div class="space-y-5 text-base leading-relaxed text-ink/80">
+      <p>
+        I bake out of my own kitchen here in {site.city}, which means every order
+        gets made one at a time, by me. No production line, no case of leftovers
+        from yesterday — just the cake you asked for, on the day you need it.
+      </p>
+      <p>
+        I started because I liked making my kids' birthday cakes more than I
+        liked buying them. That hasn't really changed. The best part of this is
+        still watching somebody's face when they see the thing they described to
+        me actually sitting on the table.
+      </p>
+      <p>
+        If you have an idea, send it over. If you have half an idea, send that
+        too — most of my favorite cakes started as a blurry photo and a "can you
+        do something like this?"
+      </p>
+    </div>
+
+    <aside class="rounded-card border border-mint-300/70 bg-mint-100 p-7">
+      <h3 class="text-xs font-semibold tracking-widest text-mint-800 uppercase">
+        Good to know
+      </h3>
+      <dl class="mt-4 space-y-4 text-sm">
+        <div>
+          <dt class="font-medium">Cottage food operation</dt>
+          <dd class="mt-1 text-ink/75">
+            {site.name} is a Florida cottage food operation, which means Kayla
+            sells directly to you from her own home kitchen.
+          </dd>
+        </div>
+        <div>
+          <dt class="font-medium">Where</dt>
+          <dd class="mt-1 text-ink/75">{site.serviceArea}</dd>
+        </div>
+        <div>
+          <dt class="font-medium">Getting in touch</dt>
+          <dd class="mt-1 text-ink/75">
+            <a class="text-mint-800 underline underline-offset-2" href={site.phoneHref}>
+              Text {site.phone}
+            </a>
+            {' '}or{' '}
+            <a class="text-mint-800 underline underline-offset-2" href={`mailto:${site.email}`}>
+              email
+            </a>.
+          </dd>
+        </div>
+      </dl>
+      <p class="mt-5 border-t border-mint-300 pt-4 text-xs leading-relaxed text-ink/65">
+        {site.cottageDisclosure}
+      </p>
+    </aside>
+  </div>
+</Section>

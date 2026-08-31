@@ -1,0 +1,49 @@
+---
+import Section from './Section.astro';
+
+/* Her actual stated process — keep the substance verbatim. */
+const steps = [
+  {
+    n: '01',
+    title: 'Send your details',
+    body: "Tell her the date of the event, the cake flavor, the cake size or how many servings you need, and the theme — photos of inspiration help a lot. List anything specific you'd like on the cake, like a color scheme or decorations to match.",
+  },
+  {
+    n: '02',
+    title: 'Get your invoice',
+    body: 'Once your details are finalized, she sends an invoice. Payment in full books the order. Anything over $100 can be split into payments.',
+  },
+  {
+    n: '03',
+    title: 'Pick up',
+    body: "You'll arrange a pickup time together, so it's ready right when you need it.",
+  },
+];
+---
+<Section
+  id="how-it-works"
+  eyebrow="How ordering works"
+  title="Three steps, no guesswork"
+  tone="mint"
+>
+  <ol role="list" class="grid gap-6 md:grid-cols-3">
+    {steps.map((s) => (
+      <li class="relative rounded-card bg-white p-7">
+        <span
+          class="font-display text-4xl font-semibold text-mint-300"
+          aria-hidden="true">{s.n}</span>
+        <h3 class="mt-3 text-lg font-semibold">{s.title}</h3>
+        <p class="mt-3 text-sm leading-relaxed text-ink/75">{s.body}</p>
+      </li>
+    ))}
+  </ol>
+
+  <div class="mt-10">
+    <a
+      href="/order"
+      class="inline-flex min-h-12 items-center rounded-btn bg-mint-800 px-6 font-medium text-white transition-colors hover:bg-ink"
+    >
+      Start your order
+    </a>
+  </div>
+</Section>

@@ -1,0 +1,293 @@
+---
+import { site } from '../data/site';
+---
+
+<section class="hero" aria-labelledby="hero-heading">
+  <div class="hero__grid">
+    <div class="hero__copy">
+      <p class="hero__eyebrow">{site.tagline}</p>
+
+      <h1 id="hero-heading" class="hero__title">
+        Cakes for the day you'll remember
+      </h1>
+
+      <p class="hero__lede">{site.positioning}</p>
+
+      <div class="hero__cta">
+        <a href="/order" class="btn btn--primary">Order a cake</a>
+        <a href="/#gallery" class="btn btn--ghost">See the gallery</a>
+      </div>
+
+      <p class="hero__meta">
+        Text <a href={site.phoneHref}>{site.phone}</a> or
+        <a href={`mailto:${site.email}`}>email her</a> — whichever's easier.
+      </p>
+    </div>
+
+    <div class="hero__media">
+      <!-- Poster is always rendered and is the sole visual under
+           prefers-reduced-motion. The video source is attached by the script
+           below ONLY when motion is allowed, so reduced-motion visitors and
+           save-data connections never download it at all. -->
+      <img
+        src="/brand/hero-cake.webp"
+        alt="A mint buttercream cake on a decorating turntable with the Kayla's Cakes logo piped on top in icing"
+        class="hero__poster"
+        width="1600"
+        height="900"
+        fetchpriority="high"
+        decoding="async"
+      />
+      <video
+        class="hero__video"
+        data-hero-video
+        data-src="/brand/hero-cake-spin.mp4"
+        poster="/brand/hero-cake.webp"
+        width="1600"
+        height="900"
+        muted
+        loop
+        playsinline
+        preload="none"
+        aria-hidden="true"
+        tabindex="-1"
+      ></video>
+
+      <div class="hero__flecks" aria-hidden="true">
+        {Array.from({ length: 7 }).map((_, i) => (
+          <span class:list={['fleck', `fleck--${i + 1}`]}></span>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const video = document.querySelector('[data-hero-video]');
+    if (!video) return;
+
+    // Full static fallback — no exceptions, and no wasted bytes.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (navigator.connection?.saveData) return;
+
+    video.src = video.dataset.src;
+    video.load();
+
+    video.addEventListener('canplay', () => {
+      video.play().then(() => video.setAttribute('data-ready', ''))
+        .catch(() => { /* autoplay blocked — the poster stands in */ });
+    }, { once: true });
+
+    // Don't burn battery animating a hero nobody is looking at.
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) video.play().catch(() => {});
+      else video.pause();
+    }, { threshold: 0.1 });
+    io.observe(video);
+  })();
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(170deg, var(--color-mint-100) 0%, var(--color-cream) 72%);
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  .hero__grid {
+    margin-inline: auto;
+    max-width: 72rem;
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  /* Copy first on mobile so the CTA stays above the fold on a small phone */
+  .hero__copy { order: 1; }
+  .hero__media { order: 2; }
+
+  @media (min-width: 64rem) {
+    .hero { padding: 3.5rem 1.5rem 4.5rem; }
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 3.5rem;
+    }
+  }
+
+  .hero__eyebrow {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    /* gold fails AA on cream, so the eyebrow sits on mint-800 for legibility
+       and gold is reserved for the rule beneath it */
+    color: var(--color-mint-800);
+    position: relative;
+    padding-bottom: 0.75rem;
+  }
+  .hero__eyebrow::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 3.25rem;
+    height: 1px;
+    background: var(--color-gold-500);
+  }
+
+  .hero__title {
+    margin-top: 1.1rem;
+    font-size: clamp(2.15rem, 5.6vw, 3.85rem);
+    line-height: 1.03;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+
+  .hero__lede {
+    margin-top: 1.1rem;
+    max-width: 32rem;
+    font-size: clamp(1rem, 1.5vw, 1.15rem);
+    line-height: 1.62;
+    color: rgb(20 20 20 / 0.78);
+  }
+
+  .hero__cta {
+    margin-top: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .hero__meta {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: rgb(20 20 20 / 0.65);
+  }
+  .hero__meta a {
+    color: var(--color-mint-800);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .hero__meta a:hover { color: var(--color-ink); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1.6rem;
+    border-radius: var(--radius-btn);
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 180ms ease, color 180ms ease, transform 180ms ease;
+  }
+  .btn:hover { transform: translateY(-1px); }
+
+  /* mint-800, not mint-600 — mint-600 fails AA behind white text (2.95) */
+  .btn--primary {
+    background: var(--color-mint-800);
+    color: #fff;
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.08), 0 10px 28px rgb(34 104 93 / 0.2);
+  }
+  .btn--primary:hover { background: var(--color-ink); }
+
+  .btn--ghost {
+    background: rgb(253 251 247 / 0.85);
+    color: var(--color-mint-800);
+    border: 1px solid var(--color-mint-600);
+  }
+  .btn--ghost:hover { background: var(--color-mint-100); }
+
+  /* --- Media ------------------------------------------------------------ */
+  .hero__media {
+    position: relative;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgb(20 20 20 / 0.04), 0 24px 60px rgb(34 104 93 / 0.16);
+  }
+
+  .hero__poster,
+  .hero__video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 68% center;
+  }
+  @media (min-width: 64rem) {
+    .hero__poster,
+    .hero__video { aspect-ratio: 16 / 10; object-position: center; }
+  }
+
+  /* Video sits on top of the poster once it can actually play, so there is
+     never a blank frame or a layout shift during loading. */
+  .hero__video {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 600ms ease;
+  }
+  .hero__video[data-ready] { opacity: 1; }
+
+  .hero__poster {
+    will-change: transform;
+    animation: hero-breathe 30s ease-in-out infinite;
+  }
+
+  /* Slow, calm — like the turntable barely moving. transform only. */
+  @keyframes hero-breathe {
+    0%, 100% { transform: scale(1.015) translate3d(0, 0, 0); }
+    50%      { transform: scale(1.055) translate3d(-0.6%, 0, 0); }
+  }
+
+  @keyframes fleck-rise {
+    0%   { transform: translate3d(0, 0, 0); opacity: 0; }
+    18%  { opacity: 0.9; }
+    82%  { opacity: 0.55; }
+    100% { transform: translate3d(12px, -96px, 0); opacity: 0; }
+  }
+
+  .hero__flecks { position: absolute; inset: 0; pointer-events: none; }
+  .fleck {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    border-radius: 9999px;
+    background: var(--color-gold-500);
+    box-shadow: 0 0 6px rgb(201 162 75 / 0.7);
+    opacity: 0;
+    will-change: transform;
+    animation: fleck-rise 16s linear infinite;
+  }
+  .fleck--1 { left: 14%; top: 74%; animation-delay: 0s;   animation-duration: 17s; }
+  .fleck--2 { left: 29%; top: 86%; animation-delay: 3s;   animation-duration: 20s; }
+  .fleck--3 { left: 44%; top: 78%; animation-delay: 6.5s; animation-duration: 15s; }
+  .fleck--4 { left: 58%; top: 90%; animation-delay: 9.5s; animation-duration: 22s; }
+  .fleck--5 { left: 71%; top: 76%; animation-delay: 4.5s; animation-duration: 18s; }
+  .fleck--6 { left: 83%; top: 88%; animation-delay: 12s;  animation-duration: 16s; }
+  .fleck--7 { left: 92%; top: 70%; animation-delay: 7s;   animation-duration: 21s; }
+
+  /* Very slow scroll parallax where supported — no JS scroll handler. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      @keyframes hero-parallax { to { transform: translate3d(0, 5%, 0) scale(1.06); } }
+      .hero__poster {
+        animation: hero-breathe 30s ease-in-out infinite, hero-parallax linear both;
+        animation-timeline: auto, scroll();
+      }
+    }
+  }
+
+  /* Full static fallback. No exceptions. */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__poster { animation: none; transform: none; }
+    .hero__video { display: none; }
+    .hero__flecks { display: none; }
+    .btn:hover { transform: none; }
+  }
+</style>

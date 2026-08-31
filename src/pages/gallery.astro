@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+import { site } from '../data/site';
+---
+<Base
+  title={`Gallery — ${site.name}`}
+  description={`Custom cakes, cupcakes, cake pops, and dessert sets baked in ${site.city}, ${site.state}.`}
+>
+  <div class="bg-mint-100">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+      <p class="text-xs font-medium tracking-[0.28em] text-mint-800 uppercase">Gallery</p>
+      <h1 class="mt-3 text-4xl font-semibold sm:text-5xl">Every bake, in one place</h1>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink/75">
+        Browse for ideas, then send her the ones you like — inspiration photos
+        are the single most useful thing you can include with an order.
+      </p>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+    <GalleryGrid />
+    <div class="mt-14 border-t border-mint-300 pt-10">
+      <a href="/order"
+         class="inline-flex min-h-12 items-center rounded-btn bg-mint-800 px-6 font-medium text-white transition-colors hover:bg-ink">
+        Order something like this
+      </a>
+    </div>
+  </div>
+</Base>
