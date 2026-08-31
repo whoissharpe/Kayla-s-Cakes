@@ -22,12 +22,26 @@ That gives you the marketing pages. The order form and `/admin` need the
 backend, which means running through Wrangler instead:
 
 ```bash
+# 1. Local secrets (gitignored — keep it that way)
+printf 'ADMIN_PASSWORD_HASH=%s\nSESSION_SECRET=%s\n' \
+  "$(printf '%s' 'BakedWithLove904' | sha256sum | cut -d' ' -f1)" \
+  "$(openssl rand -hex 32)" > .dev.vars
+
+# 2. Build, create the local tables, run it
 npm run build
-npx wrangler pages dev dist --d1 DB --r2 PHOTOS
+npm run db:local
+npx wrangler pages dev
 ```
 
-Create a `.dev.vars` file (copy `.env.example`) for local secrets. It is
-gitignored and must stay that way.
+Then open http://localhost:8788 and sign in at `/admin` with
+`BakedWithLove904`. Bindings come from `wrangler.toml`, and the local D1 and
+R2 are simulated on disk — no Cloudflare account needed to develop against
+the real code paths.
+
+This flow has been run end to end: order submission with a photo upload,
+past-date and bad-contact rejection, the honeypot, per-IP rate limiting,
+admin login, status and note updates, gated photo access, and CSV export all
+behave as described.
 
 ### Useful commands
 
