@@ -1,0 +1,440 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { LEAD_STATUSES } from '../../functions/_lib/types';
+---
+<Base
+  title={`Orders — ${site.name}`}
+  description="Private order management."
+  bare
+  noindex
+>
+  <div class="admin">
+    <!-- Sign in -->
+    <section class="gate" data-gate hidden>
+      <form class="gate__card" data-login>
+        <img src="/brand/logo-mark-cutout.webp" alt="" width="56" height="62" class="gate__logo" />
+        <h1 class="gate__title">Your orders</h1>
+        <p class="gate__sub">Sign in to see who's been in touch.</p>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="current-password" required />
+
+        <button type="submit" class="btn-primary" data-login-btn>Sign in</button>
+        <p class="gate__err" role="alert" data-login-err></p>
+      </form>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dash" data-dash hidden>
+      <header class="dash__bar">
+        <div class="dash__brand">
+          <img src="/brand/logo-mark-cutout.webp" alt="" width="36" height="40" />
+          <div>
+            <h1>Orders</h1>
+            <p data-summary></p>
+          </div>
+        </div>
+        <div class="dash__actions">
+          <a href="/api/admin/export" class="btn-ghost">Export CSV</a>
+          <button type="button" class="btn-ghost" data-logout>Sign out</button>
+        </div>
+      </header>
+
+      <p class="notice" data-email-notice hidden>
+        Email notifications are off, so new orders show up here only. Worth a
+        look each morning.
+      </p>
+      <p class="notice" data-photo-notice hidden>
+        Photo storage isn't switched on yet, so any inspiration photos people
+        attach aren't being kept. Everything else about their order is saved.
+      </p>
+
+      <div class="filters">
+        <div class="filters__search">
+          <label for="search" class="sr-only">Search orders</label>
+          <input type="search" id="search" placeholder="Search a name, flavor, theme…" data-search />
+        </div>
+        <div class="filters__chips" role="group" aria-label="Filter by status">
+          <button type="button" class="chip is-on" data-filter="all">All</button>
+          {LEAD_STATUSES.map((s) => (
+            <button type="button" class="chip" data-filter={s}>{s}</button>
+          ))}
+        </div>
+      </div>
+
+      <div class="leads" data-leads aria-live="polite"></div>
+      <p class="empty" data-empty hidden>Nothing here yet.</p>
+    </section>
+  </div>
+</Base>
+
+<script is:inline define:vars={{ statuses: LEAD_STATUSES }}>
+  (() => {
+    const gate = document.querySelector('[data-gate]');
+    const dash = document.querySelector('[data-dash]');
+    const list = document.querySelector('[data-leads]');
+    const empty = document.querySelector('[data-empty]');
+    const summary = document.querySelector('[data-summary]');
+
+    let leads = [];
+    let filter = 'all';
+    let query = '';
+
+    const esc = (s) =>
+      String(s ?? '').replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+    const fmtDate = (iso) => {
+      if (!iso) return '';
+      const d = new Date(iso.length === 10 ? iso + 'T00:00:00' : iso);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    };
+
+    const daysAway = (iso) => {
+      const d = new Date(iso + 'T00:00:00');
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      return Math.round((d - today) / 86400000);
+    };
+
+    // --- Auth ------------------------------------------------------------
+    async function boot() {
+      const res = await fetch('/api/admin/leads');
+      if (res.status === 401) { gate.hidden = false; return; }
+      const data = await res.json();
+      leads = data.leads || [];
+      document.querySelector('[data-email-notice]').hidden = data.emailConfigured !== false;
+      document.querySelector('[data-photo-notice]').hidden = data.photosConfigured !== false;
+      dash.hidden = false;
+      render();
+    }
+
+    document.querySelector('[data-login]').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.querySelector('[data-login-btn]');
+      const err = document.querySelector('[data-login-err]');
+      const password = e.target.password.value;
+
+      btn.disabled = true; btn.textContent = 'Checking…'; err.textContent = '';
+      try {
+        const res = await fetch('/api/admin/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ password }),
+        });
+        if (!res.ok) throw new Error((await res.json()).error || 'Sign in failed');
+        gate.hidden = true;
+        await boot();
+      } catch (e2) {
+        err.textContent = e2.message;
+        btn.disabled = false; btn.textContent = 'Sign in';
+      }
+    });
+
+    document.querySelector('[data-logout]').addEventListener('click', async () => {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      location.reload();
+    });
+
+    // --- Filtering -------------------------------------------------------
+    document.querySelector('[data-search]').addEventListener('input', (e) => {
+      query = e.target.value.toLowerCase().trim();
+      render();
+    });
+
+    document.querySelectorAll('[data-filter]').forEach((b) => {
+      b.addEventListener('click', () => {
+        filter = b.dataset.filter;
+        document.querySelectorAll('[data-filter]').forEach((x) => x.classList.toggle('is-on', x === b));
+        render();
+      });
+    });
+
+    const visible = () =>
+      leads.filter((l) => {
+        if (filter !== 'all' && l.status !== filter) return false;
+        if (!query) return true;
+        return [l.name, l.email, l.phone, l.item_type, l.flavor, l.theme, l.notes, l.admin_notes]
+          .filter(Boolean).join(' ').toLowerCase().includes(query);
+      });
+
+    // --- Render ----------------------------------------------------------
+    function render() {
+      const rows = visible();
+      const nNew = leads.filter((l) => l.status === 'new').length;
+      summary.textContent =
+        `${leads.length} total · ${nNew} new` + (rows.length !== leads.length ? ` · ${rows.length} shown` : '');
+
+      // Surfaced in the tab title so a pinned tab acts as the notification
+      // that email would otherwise provide.
+      document.title = nNew ? `(${nNew}) Orders — Kayla's Cakes` : "Orders — Kayla's Cakes";
+
+      empty.hidden = rows.length > 0;
+      list.innerHTML = rows.map(card).join('');
+    }
+
+    function card(l) {
+      const away = daysAway(l.event_date);
+      const urgency =
+        away < 0 ? 'past' : away <= 7 ? 'soon' : '';
+      const awayLabel =
+        away < 0 ? 'date passed' : away === 0 ? 'today' : away === 1 ? 'tomorrow' : `in ${away} days`;
+
+      const contact = l.contact_method === 'email'
+        ? `<a href="mailto:${esc(l.email)}">${esc(l.email)}</a>`
+        : `<a href="tel:${esc((l.phone || '').replace(/\D/g, ''))}">${esc(l.phone)}</a>`;
+
+      const detail = (label, value) =>
+        value ? `<div class="d"><dt>${label}</dt><dd>${esc(value)}</dd></div>` : '';
+
+      const photos = (l.photo_keys || []).map((k, i) =>
+        `<a class="thumb" href="/api/admin/photo/${k.split('/').map(encodeURIComponent).join('/')}" target="_blank" rel="noopener">
+           <img src="/api/admin/photo/${k.split('/').map(encodeURIComponent).join('/')}" alt="Inspiration photo ${i + 1} from ${esc(l.name)}" loading="lazy" />
+         </a>`).join('');
+
+      return `
+      <article class="lead" data-id="${l.id}">
+        <header class="lead__head">
+          <div>
+            <h2>${esc(l.name)}</h2>
+            <p class="lead__meta">
+              ${esc(l.item_type)} · for <strong>${fmtDate(l.event_date)}</strong>
+              <span class="away away--${urgency}">${awayLabel}</span>
+            </p>
+          </div>
+          <label class="sr-only" for="status-${l.id}">Status for ${esc(l.name)}</label>
+          <select id="status-${l.id}" class="status status--${l.status}" data-status>
+            ${statuses.map((s) => `<option value="${s}"${s === l.status ? ' selected' : ''}>${s}</option>`).join('')}
+          </select>
+        </header>
+
+        <dl class="lead__grid">
+          <div class="d"><dt>Reach them</dt><dd>${contact}</dd></div>
+          ${detail('Flavor', l.flavor)}
+          ${detail('Size / servings', l.servings)}
+          ${detail('Budget', l.budget)}
+          ${detail('Anything else', l.notes)}
+        </dl>
+
+        ${l.theme ? `<div class="theme"><dt>Theme</dt><p>${esc(l.theme)}</p></div>` : ''}
+        ${photos ? `<div class="thumbs">${photos}</div>` : ''}
+
+        <label class="sr-only" for="notes-${l.id}">Your notes about ${esc(l.name)}</label>
+        <textarea id="notes-${l.id}" class="notes" data-notes rows="2"
+          placeholder="Your notes — quoted $180, waiting on her to confirm colors…">${esc(l.admin_notes || '')}</textarea>
+
+        <footer class="lead__foot">
+          <span>Came in ${fmtDate(l.created_at)}</span>
+          <span data-saved class="saved"></span>
+        </footer>
+      </article>`;
+    }
+
+    // --- Updates ---------------------------------------------------------
+    async function patch(id, body, el) {
+      const saved = el.closest('.lead').querySelector('[data-saved]');
+      try {
+        const res = await fetch(`/api/admin/leads/${id}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) throw new Error();
+        Object.assign(leads.find((l) => l.id === id), body);
+        saved.textContent = 'Saved';
+        setTimeout(() => (saved.textContent = ''), 2000);
+      } catch {
+        saved.textContent = "Didn't save — try again";
+      }
+    }
+
+    list.addEventListener('change', (e) => {
+      const lead = e.target.closest('.lead');
+      if (!lead) return;
+      if (e.target.matches('[data-status]')) {
+        e.target.className = `status status--${e.target.value}`;
+        patch(lead.dataset.id, { status: e.target.value }, e.target);
+        // Re-render so the card moves if a filter is active
+        if (filter !== 'all') setTimeout(render, 400);
+      }
+    });
+
+    list.addEventListener('focusout', (e) => {
+      const lead = e.target.closest('.lead');
+      if (!lead || !e.target.matches('[data-notes]')) return;
+      const current = leads.find((l) => l.id === lead.dataset.id);
+      if ((current.admin_notes || '') === e.target.value) return;
+      patch(lead.dataset.id, { admin_notes: e.target.value }, e.target);
+    });
+
+    boot();
+  })();
+</script>
+
+<style>
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+
+  .admin { min-height: 100svh; background: var(--color-mint-100); }
+
+  /* --- Sign in ---------------------------------------------------------- */
+  .gate { display: grid; place-items: center; min-height: 100svh; padding: 1.5rem; }
+  .gate__card {
+    width: 100%; max-width: 23rem;
+    background: var(--color-cream);
+    border-radius: var(--radius-card);
+    padding: 2.25rem;
+    box-shadow: 0 2px 4px rgb(20 20 20 / 0.04), 0 24px 60px rgb(34 104 93 / 0.16);
+    text-align: center;
+  }
+  .gate__logo { margin: 0 auto 1rem; display: block; }
+  .gate__title { font-family: var(--font-display); font-size: 1.6rem; font-weight: 600; }
+  .gate__sub { margin-top: 0.4rem; font-size: 0.9rem; color: rgb(20 20 20 / 0.65); }
+  .gate__card label {
+    display: block; text-align: left;
+    margin: 1.6rem 0 0.4rem; font-size: 0.85rem; font-weight: 500;
+  }
+  .gate__card input {
+    width: 100%; min-height: 3rem; padding: 0.7rem 0.9rem;
+    border: 1px solid var(--color-mint-300); border-radius: var(--radius-btn);
+    background: #fff; font: inherit; font-size: 1rem;
+  }
+  .gate__err:empty { display: none; }
+  .gate__err { margin-top: 0.9rem; font-size: 0.85rem; font-weight: 500; color: #A33; }
+
+  .btn-primary {
+    width: 100%; min-height: 3rem; margin-top: 1.25rem;
+    border-radius: var(--radius-btn);
+    background: var(--color-mint-800); color: #fff;
+    font: inherit; font-size: 1rem; font-weight: 500;
+  }
+  .btn-primary:hover:not(:disabled) { background: var(--color-ink); }
+  .btn-primary:disabled { opacity: 0.6; cursor: progress; }
+
+  /* --- Dashboard -------------------------------------------------------- */
+  .dash { max-width: 60rem; margin: 0 auto; padding: 1.5rem 1rem 5rem; }
+  @media (min-width: 48rem) { .dash { padding: 2.5rem 1.5rem 6rem; } }
+
+  .dash__bar {
+    display: flex; flex-wrap: wrap; gap: 1rem;
+    align-items: center; justify-content: space-between;
+    padding-bottom: 1.5rem;
+  }
+  .dash__brand { display: flex; align-items: center; gap: 0.85rem; }
+  .dash__brand h1 { font-family: var(--font-display); font-size: 1.65rem; font-weight: 600; }
+  .dash__brand p { font-size: 0.85rem; color: rgb(20 20 20 / 0.62); }
+  .dash__actions { display: flex; gap: 0.6rem; }
+
+  .btn-ghost {
+    display: inline-flex; align-items: center; min-height: 2.6rem;
+    padding: 0 1rem; border-radius: var(--radius-btn);
+    border: 1px solid var(--color-mint-600);
+    background: var(--color-cream); color: var(--color-mint-800);
+    font: inherit; font-size: 0.875rem; font-weight: 500;
+  }
+  .btn-ghost:hover { background: #fff; }
+
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    align-items: center; justify-content: space-between;
+    padding-bottom: 1.25rem;
+  }
+  .filters__search { flex: 1 1 15rem; }
+  .filters__search input {
+    width: 100%; min-height: 2.75rem; padding: 0.6rem 0.9rem;
+    border: 1px solid var(--color-mint-300); border-radius: var(--radius-btn);
+    background: var(--color-cream); font: inherit; font-size: 1rem;
+  }
+  .filters__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .chip {
+    min-height: 2.25rem; padding: 0 0.85rem;
+    border-radius: 9999px; border: 1px solid transparent;
+    background: var(--color-cream); color: rgb(20 20 20 / 0.7);
+    font: inherit; font-size: 0.8rem; text-transform: capitalize;
+  }
+  .chip:hover { border-color: var(--color-mint-600); }
+  .chip.is-on { background: var(--color-mint-800); color: #fff; }
+
+  .notice {
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    border-left: 3px solid var(--color-gold-500);
+    border-radius: 0 var(--radius-btn) var(--radius-btn) 0;
+    background: var(--color-cream);
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgb(20 20 20 / 0.75);
+  }
+
+  .leads { display: grid; gap: 1rem; }
+  .empty { padding: 3rem 0; text-align: center; color: rgb(20 20 20 / 0.55); }
+
+  .lead {
+    background: var(--color-cream);
+    border-radius: var(--radius-card);
+    padding: 1.4rem;
+    box-shadow: 0 1px 2px rgb(20 20 20 / 0.04);
+  }
+  @media (min-width: 48rem) { .lead { padding: 1.6rem 1.75rem; } }
+
+  .lead__head {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    align-items: flex-start; justify-content: space-between;
+  }
+  .lead__head h2 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; }
+  .lead__meta { margin-top: 0.25rem; font-size: 0.875rem; color: rgb(20 20 20 / 0.7); }
+
+  .away {
+    display: inline-block; margin-left: 0.4rem;
+    padding: 0.1rem 0.5rem; border-radius: 9999px;
+    background: var(--color-mint-100); color: var(--color-mint-800);
+    font-size: 0.72rem; font-weight: 600;
+  }
+  .away--soon { background: #FCEFD8; color: #7A5410; }
+  .away--past { background: #F3E2E2; color: #8A2A2A; }
+
+  .status {
+    min-height: 2.4rem; padding: 0 0.75rem;
+    border-radius: var(--radius-btn);
+    border: 1px solid var(--color-mint-300);
+    background: #fff; font: inherit; font-size: 0.85rem;
+    text-transform: capitalize; cursor: pointer;
+  }
+  .status--new { border-color: var(--color-mint-600); background: var(--color-mint-100); font-weight: 600; }
+  .status--booked { border-color: var(--color-mint-800); background: var(--color-mint-800); color: #fff; }
+  .status--completed { opacity: 0.75; }
+  .status--lost { opacity: 0.6; }
+
+  .lead__grid {
+    display: grid; gap: 0.75rem 1.5rem;
+    margin-top: 1.1rem;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  }
+  .d dt { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(20 20 20 / 0.5); }
+  .d dd { margin-top: 0.15rem; font-size: 0.9rem; }
+  .d a { color: var(--color-mint-800); text-decoration: underline; text-underline-offset: 2px; }
+
+  .theme { margin-top: 1.1rem; padding: 0.85rem 1rem; background: var(--color-mint-100); border-radius: var(--radius-btn); }
+  .theme dt { font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-mint-800); }
+  .theme p { margin-top: 0.3rem; font-size: 0.9rem; line-height: 1.55; white-space: pre-wrap; }
+
+  .thumbs { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+  .thumb { display: block; width: 5.5rem; height: 5.5rem; border-radius: 0.6rem; overflow: hidden; background: var(--color-mint-100); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+
+  .notes {
+    width: 100%; margin-top: 1.1rem; padding: 0.65rem 0.85rem;
+    border: 1px dashed var(--color-mint-300); border-radius: var(--radius-btn);
+    background: #fff; font: inherit; font-size: 0.9rem; resize: vertical;
+  }
+  .notes:focus { border-style: solid; }
+
+  .lead__foot {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 0.8rem; font-size: 0.75rem; color: rgb(20 20 20 / 0.5);
+  }
+  .saved { color: var(--color-mint-800); font-weight: 600; }
+</style>

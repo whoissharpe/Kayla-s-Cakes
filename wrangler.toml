@@ -1,0 +1,20 @@
+# Cloudflare Pages configuration.
+#
+# IMPORTANT: `wrangler pages deploy` syncs the Pages project's bindings from
+# this file. Anything set in the dashboard or via the API that is absent here
+# gets removed on the next deploy, so this file is the source of truth for
+# bindings. Secrets are the exception — they are managed separately and are
+# not touched by a deploy.
+
+name = "kaylas-cakes"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "kaylas-cakes-leads"
+database_id = "16dd99d3-5f68-4a1e-95ea-2e4d9186f8b5"
+
+[[r2_buckets]]
+binding = "PHOTOS"
+bucket_name = "kaylas-cakes-photos"

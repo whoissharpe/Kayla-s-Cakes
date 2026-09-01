@@ -1,0 +1,161 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="ftr">
+  <img src="/brand/logo-mark-cutout.webp" alt="" class="ftr__watermark" aria-hidden="true"
+       width="528" height="585" loading="lazy" />
+
+  <div class="ftr__inner">
+    <div class="ftr__top">
+      <a href="/" class="ftr__brand">
+        {/* The logo's own wordmark linework is near-black, so this dark
+            background needs the colour-knocked-out variant (cream ink,
+            everything else untouched) rather than a retyped substitute. */}
+        <img src="/brand/logo-lockup-reversed.webp" alt={`${site.name} — ${site.tagline}`}
+             width="800" height="625" loading="lazy" class="ftr__brandmark" />
+      </a>
+
+      <div class="ftr__pitch">
+        <p class="ftr__line">Baked from scratch, one order at a time.</p>
+        <a href="/order" class="ftr__cta">Order a cake</a>
+      </div>
+    </div>
+
+    <div class="rule-gold ftr__rule" aria-hidden="true"></div>
+
+    <div class="ftr__cols">
+      <div>
+        <h2>Get in touch</h2>
+        <ul>
+          <li><a href={site.phoneHref}>Text {site.phone}</a></li>
+          <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+          <li><a href="/order">Start an order</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Follow along</h2>
+        <ul>
+          <li><a href={site.instagram} rel="me noopener" target="_blank">Instagram {site.instagramHandle}</a></li>
+          <li><a href={site.facebook} rel="me noopener" target="_blank">Facebook</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Have a look</h2>
+        <ul>
+          <li><a href="/#what-she-makes">What she makes</a></li>
+          <li><a href="/gallery">Gallery</a></li>
+          <li><a href="/#how-it-works">How ordering works</a></li>
+          <li><a href="/#about">About Kayla</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h2>Service area</h2>
+        <ul class="ftr__areas">
+          {site.serviceAreaList.map((a) => <li>{a}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="ftr__base">
+      {site.cottageDisclosure && <p class="ftr__legal">{site.cottageDisclosure}</p>}
+      <p class="ftr__copy">© {year} {site.name}. {site.city}, {site.state}.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: var(--color-footer-bg);
+    color: #fff;
+  }
+
+  .ftr__watermark {
+    position: absolute;
+    left: -10%;
+    bottom: -30%;
+    width: min(40rem, 80vw);
+    opacity: 0.07;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .ftr__inner { max-width: 76rem; margin-inline: auto; padding: 4.5rem 1.25rem 3rem; }
+  @media (min-width: 64rem) { .ftr__inner { padding: 6rem 2.5rem 3rem; } }
+
+  .ftr__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2.5rem;
+  }
+
+  .ftr__brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .ftr__brandmark {
+    width: clamp(9rem, 18vw, 12.5rem);
+    height: auto;
+  }
+
+  .ftr__pitch { display: grid; gap: 1.25rem; justify-items: start; }
+  .ftr__line {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.2;
+    max-width: 18ch;
+  }
+  .ftr__cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 3rem;
+    padding: 0 1.75rem;
+    border-radius: var(--radius-btn);
+    background: var(--color-mint-300);
+    color: var(--color-footer-bg);
+    font-weight: 600;
+    transition: background-color 200ms ease;
+  }
+  .ftr__cta:hover { background: #fff; }
+
+  .ftr__rule { margin: 3.5rem 0; }
+
+  .ftr__cols { display: grid; gap: 2.5rem; }
+  @media (min-width: 40rem) { .ftr__cols { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 64rem) { .ftr__cols { grid-template-columns: repeat(4, 1fr); gap: 2rem; } }
+
+  .ftr__cols h2 {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-mint-300);
+  }
+  .ftr__cols ul { margin-top: 1rem; display: grid; gap: 0.65rem; }
+  .ftr__cols a { font-size: 0.92rem; color: rgb(255 255 255 / 0.82); }
+  .ftr__cols a:hover { color: var(--color-mint-300); } /* cherry fails AA on cocoa-900 (2.7); blush reads at 8.9 */
+  .ftr__areas li { font-size: 0.92rem; color: rgb(255 255 255 / 0.82); }
+
+  .ftr__base {
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgb(175 233 223 / 0.15);
+    display: grid;
+    gap: 0.75rem;
+  }
+  /* gold reads fine as a thin decorative rule on this dark background,
+     just never as body text (see the token comment in global.css) */
+  .ftr__legal { max-width: 60ch; font-size: 0.75rem; line-height: 1.6; color: rgb(255 255 255 / 0.6); }
+  .ftr__copy { font-size: 0.75rem; color: rgb(255 255 255 / 0.5); }
+</style>

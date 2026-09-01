@@ -1,0 +1,87 @@
+---
+interface Props {
+  id: string;
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  tone?: 'cream' | 'mint' | 'dark';
+  /** Large logo mark watermarked behind a dark section. */
+  watermark?: boolean;
+}
+const { id, eyebrow, title, lede, tone = 'cream', watermark = false } = Astro.props;
+---
+<section id={id} aria-labelledby={`${id}-heading`} class:list={['sec', `sec--${tone}`]}>
+  {watermark && (
+    <img src="/brand/logo-mark-cutout.webp" alt="" class="sec__watermark" aria-hidden="true"
+         width="528" height="585" loading="lazy" />
+  )}
+  <div class="sec__inner">
+    <header class="sec__head">
+      {eyebrow && <p class="sec__eyebrow">{eyebrow}</p>}
+      <h2 id={`${id}-heading`} class="sec__title">{title}</h2>
+      <div class="sec__rule" aria-hidden="true"></div>
+      {lede && <p class="sec__lede">{lede}</p>}
+    </header>
+    <div class="sec__body"><slot /></div>
+  </div>
+</section>
+
+<style>
+  .sec { position: relative; isolation: isolate; padding: 5.5rem 1.25rem; overflow: hidden; }
+  @media (min-width: 64rem) { .sec { padding: 7.5rem 2.5rem; } }
+
+  .sec--cream { background: var(--color-cream); }
+  .sec--mint  { background: var(--color-mint-100); }
+  .sec--dark  { background: var(--color-mint-950); color: #fff; }
+
+  .sec__watermark {
+    position: absolute;
+    right: -12%;
+    top: 50%;
+    translate: 0 -50%;
+    width: min(46rem, 70vw);
+    /* Real alpha, so no blend mode and no bounding-box artefact */
+    opacity: 0.07;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .sec__inner { max-width: 76rem; margin-inline: auto; }
+  .sec__head { max-width: 40rem; }
+
+  .sec__eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--color-mint-800);
+  }
+  .sec--dark .sec__eyebrow { color: var(--color-mint-300); }
+
+  .sec__title {
+    margin-top: 0.9rem;
+    font-size: clamp(2rem, 4.2vw, 3.1rem);
+    line-height: 1.06;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  /* The gold rule is the one flourish that repeats across every section */
+  .sec__rule {
+    width: 3.5rem;
+    height: 2px;
+    margin-top: 1.5rem;
+    background: var(--color-gold-500);
+    border-radius: 2px;
+  }
+
+  .sec__lede {
+    margin-top: 1.5rem;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: rgb(20 20 20 / 0.72);
+  }
+  .sec--dark .sec__lede { color: rgb(255 255 255 / 0.82); }
+
+  .sec__body { margin-top: 3.25rem; }
+</style>

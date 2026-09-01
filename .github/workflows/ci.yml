@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A newer push to the same branch makes an in-flight run pointless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Typecheck and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck the site
+        run: npm run check
+
+      - name: Typecheck the Pages Functions
+        run: npm run check:functions
+
+      - name: Build
+        run: npm run build
+
+      - name: Guard against oversized assets
+        # Large images and video are the most likely way this site loses its
+        # performance budget, and it happens by accident when someone drops in
+        # an unoptimized file. Fail loudly instead of finding out via Lighthouse.
+        run: |
+          echo "Checking public/ for files over 800KB…"
+          OVERSIZED=$(find public -type f -size +800k 2>/dev/null || true)
+          if [ -n "$OVERSIZED" ]; then
+            echo "::error::These files exceed 800KB and will hurt page performance:"
+            echo "$OVERSIZED" | while read -r f; do
+              echo "  $(du -h "$f" | cut -f1)  $f"
+            done
+            echo "Compress them before merging — see ASSETS.md."
+            exit 1
+          fi
+          echo "OK — nothing oversized."
