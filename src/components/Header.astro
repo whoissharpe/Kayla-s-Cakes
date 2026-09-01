@@ -24,10 +24,10 @@ const links = [
   <nav aria-label="Main" class="hdr__inner">
     <a href="/" class="hdr__brand">
       <img src="/brand/logo-mark-cutout.webp" alt="" width="52" height="52" class="hdr__mark" />
-      <span class="hdr__name">
-        {site.name}
-        <span class="hdr__tag">{site.tagline}</span>
-      </span>
+      {/* The real logo's cursive wordmark, not a retyped font — same reasoning
+          as the footer brand link. */}
+      <img src="/brand/logo-wordmark.webp" alt={`${site.name} — ${site.tagline}`}
+           width="900" height="281" class="hdr__wordmark" />
     </a>
 
     <ul class="hdr__links">
@@ -92,26 +92,12 @@ const links = [
   @media (min-width: 64rem) { .hdr__mark { width: 3.4rem; height: 3.4rem; } }
   .hdr[data-solid] .hdr__mark { width: 2.6rem; height: 2.6rem; }
 
-  .hdr__name {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-display);
-    font-size: 1.15rem;
-    font-weight: 600;
-    line-height: 1.05;
-    color: var(--color-ink);
+  .hdr__wordmark {
+    width: clamp(9rem, 16vw, 11.5rem);
+    height: auto;
+    transition: width 300ms ease;
   }
-  @media (min-width: 64rem) { .hdr__name { font-size: 1.3rem; } }
-
-  .hdr__tag {
-    font-family: var(--font-sans);
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--color-mint-800);
-    margin-top: 0.22rem;
-  }
+  .hdr[data-solid] .hdr__wordmark { width: clamp(8rem, 14vw, 10.25rem); }
 
   .hdr__links {
     display: none;
