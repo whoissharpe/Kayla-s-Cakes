@@ -27,7 +27,7 @@ const links = [
       {/* The real logo's cursive wordmark, not a retyped font — same reasoning
           as the footer brand link. */}
       <img src="/brand/logo-wordmark.webp" alt={`${site.name} — ${site.tagline}`}
-           width="900" height="281" class="hdr__wordmark" />
+           width="900" height="254" class="hdr__wordmark" />
     </a>
 
     <ul class="hdr__links">
@@ -84,20 +84,24 @@ const links = [
   .hdr__brand { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
 
   .hdr__mark {
-    width: 2.9rem;
-    height: 2.9rem;
+    width: 3.6rem;
+    height: 3.6rem;
     object-fit: contain;
     transition: width 300ms ease, height 300ms ease;
   }
-  @media (min-width: 64rem) { .hdr__mark { width: 3.4rem; height: 3.4rem; } }
-  .hdr[data-solid] .hdr__mark { width: 2.6rem; height: 2.6rem; }
+  @media (min-width: 64rem) { .hdr__mark { width: 4.1rem; height: 4.1rem; } }
+  .hdr[data-solid] .hdr__mark { width: 3.3rem; height: 3.3rem; }
 
+  /* Sized off height (not width) so it tracks the icon next to it — the
+     wordmark image is mostly wide whitespace-free ink, so matching heights
+     is what actually reads as "the same size" next to the glyph. */
   .hdr__wordmark {
-    width: clamp(9rem, 16vw, 11.5rem);
-    height: auto;
-    transition: width 300ms ease;
+    height: 2.35rem;
+    width: auto;
+    transition: height 300ms ease;
   }
-  .hdr[data-solid] .hdr__wordmark { width: clamp(8rem, 14vw, 10.25rem); }
+  @media (min-width: 64rem) { .hdr__wordmark { height: 2.7rem; } }
+  .hdr[data-solid] .hdr__wordmark { height: 2.15rem; }
 
   .hdr__links {
     display: none;
