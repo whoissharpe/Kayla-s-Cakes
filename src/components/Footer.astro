@@ -10,9 +10,9 @@ const year = new Date().getFullYear();
   <div class="ftr__inner">
     <div class="ftr__top">
       <a href="/" class="ftr__brand">
-        {/* The full wordmark image is opaque and only reads clean on a light
-            surface (see logo-lockup.webp comment in Hero/About) — the dark
-            footer pairs the transparent glyph with real text instead. */}
+        {/* The glyph is transparent and safe on any surface; the wordmark
+            itself is real text here (and everywhere else it appears) rather
+            than baked into a raster image. */}
         <img src="/brand/logo-mark-cutout.webp" alt="" aria-hidden="true"
              width="120" height="82" loading="lazy" class="ftr__mark" />
         <span class="ftr__wordmark">

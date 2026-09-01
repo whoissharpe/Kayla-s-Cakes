@@ -5,16 +5,15 @@ downloaded or dropped in by hand.
 
 | File | Size | What it is |
 |---|---|---|
-| `hero-cake.webp` / `.jpg` | 47KB / 100KB | Hero still — the turntable cake. JPEG is the fallback for browsers without WebP. |
+| `hero-cake.webp` / `.jpg` | 99KB / 204KB | Hero still — the turntable cake, 2400×1340. Upscaled 2× with a Lanczos resample plus a light unsharp mask from the original 1600×893 generation, which was visibly soft once stretched to `object-fit: cover` on wide viewports. JPEG is the fallback for browsers without WebP. |
 | `hero-cake-spin.mp4` | 164KB | The 5-second spinning loop. 1280 wide, CRF 32, no audio, faststart. |
-| `logo-lockup.webp` | 35KB | Full mark + wordmark ("Kayla's Cakes / baked with love"). Left **opaque** — its white canvas is imperceptible against the site's cream, so it's only used on light sections (hero badge, About). |
-| `logo-mark-cutout.webp` | 23KB | Glyph only (cherry, swirl, chocolate drip), **transparent**. Used in the header, both watermarks, and the footer — anywhere the surface is dark or tinted. |
+| `logo-mark-cutout.webp` | 26KB | The glyph (cherry, swirl, chocolate drip), **transparent** and cropped tight to its artwork. Used everywhere the mark appears — header, hero badge, About, both watermarks, footer — because a transparent PNG/WebP has no canvas colour to clash with whatever's behind it. Where the full wordmark needs to appear next to it (Header, Footer), it's set as real text rather than baked into a raster image. |
 | `categories/*.webp` | 8–29KB each | The six "What she makes" cards. |
 | `og.jpg` | 25KB | Social share image, exactly 1200×630. |
 | `favicon.png` | 20KB | 512×512. |
 | `apple-touch-icon.png` | 3KB | 180×180. |
 
-`public/` totals about 572KB. CI fails if any single file exceeds 800KB — see
+`public/` totals about 590KB. CI fails if any single file exceeds 800KB — see
 the guard in `.github/workflows/ci.yml`.
 
 ## Provenance

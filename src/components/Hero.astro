@@ -9,7 +9,7 @@ import { site } from '../data/site';
   <div class="hero__bg" aria-hidden="true">
     <picture>
       <source srcset="/brand/hero-cake.webp" type="image/webp" />
-      <img src="/brand/hero-cake.jpg" alt="" class="hero__img" width="1600" height="900" fetchpriority="high" />
+      <img src="/brand/hero-cake.jpg" alt="" class="hero__img" width="2400" height="1340" fetchpriority="high" />
     </picture>
     <video
       class="hero__video" data-hero-video
@@ -25,10 +25,10 @@ import { site } from '../data/site';
 
   <div class="hero__inner">
     <img
-      src="/brand/logo-lockup.webp"
+      src="/brand/logo-mark-cutout.webp"
       alt={`${site.name} — ${site.tagline}`}
       class="hero__badge"
-      width="360" height="360"
+      width="407" height="410"
       fetchpriority="high"
     />
 
@@ -300,14 +300,26 @@ import { site } from '../data/site';
     82%  { opacity: 0.5; }
     100% { transform: translate3d(16px, -140px, 0); opacity: 0; }
   }
-  .fleck--1 { left: 8%;  top: 78%; animation-delay: 0s;    animation-duration: 18s; }
-  .fleck--2 { left: 21%; top: 88%; animation-delay: 3.2s;  animation-duration: 21s; }
-  .fleck--3 { left: 35%; top: 72%; animation-delay: 6.4s;  animation-duration: 16s; }
-  .fleck--4 { left: 48%; top: 92%; animation-delay: 9.1s;  animation-duration: 23s; }
-  .fleck--5 { left: 62%; top: 80%; animation-delay: 4.7s;  animation-duration: 19s; }
-  .fleck--6 { left: 74%; top: 90%; animation-delay: 12.3s; animation-duration: 17s; }
-  .fleck--7 { left: 86%; top: 74%; animation-delay: 7.6s;  animation-duration: 22s; }
-  .fleck--8 { left: 94%; top: 85%; animation-delay: 15s;   animation-duration: 20s; }
+  /* Kept clear of .hero__inner's text column (roughly the left half on
+     desktop) — a stray fleck drifting through empty cream space next to the
+     copy reads as a screen artifact, not a decoration. */
+  .fleck--1 { left: 52%; top: 80%; animation-delay: 0s;    animation-duration: 18s; }
+  .fleck--2 { left: 60%; top: 90%; animation-delay: 3.2s;  animation-duration: 21s; }
+  .fleck--3 { left: 68%; top: 74%; animation-delay: 6.4s;  animation-duration: 16s; }
+  .fleck--4 { left: 76%; top: 92%; animation-delay: 9.1s;  animation-duration: 23s; }
+  .fleck--5 { left: 82%; top: 82%; animation-delay: 4.7s;  animation-duration: 19s; }
+  .fleck--6 { left: 88%; top: 90%; animation-delay: 12.3s; animation-duration: 17s; }
+  .fleck--7 { left: 93%; top: 76%; animation-delay: 7.6s;  animation-duration: 22s; }
+  .fleck--8 { left: 97%; top: 85%; animation-delay: 15s;   animation-duration: 20s; }
+  @media (max-width: 63.99rem) {
+    /* Below the desktop split there's no separate photo lane — the scrim
+       washes the whole frame (see .hero__scrim above) and content stacks in
+       one column, so let flecks spread back across the full width. */
+    .fleck--1 { left: 10%; }
+    .fleck--2 { left: 24%; }
+    .fleck--3 { left: 38%; }
+    .fleck--4 { left: 50%; }
+  }
 
   /* Slow parallax where supported — progressive enhancement, no JS handler */
   @supports (animation-timeline: scroll()) {
