@@ -17,20 +17,34 @@
      blush / coral on cream 2.73 / 2.44  FAIL — decorative accents only, never text
 --------------------------------------------------------------------------- */
 @theme {
-  --color-mint-100: #DFF6F1;
-  --color-mint-300: #AFE9DF;
-  --color-mint-600: #3FA697;
-  --color-mint-800: #22685D;
-  /* Deeper shades of the same hue, for dark sections and image scrims.
-     white on mint-900 = 11.71, on mint-950 = 15.30
-     gold-500 on mint-900 = 4.88 — the one place gold works as body text */
-  --color-mint-900: #123F38;
-  --color-mint-950: #0B2A25;
-  --color-gold-500: #C9A24B;
+  /*
+   * Rebrand (2026-09-01): the logo moved from a mint watercolor mark to a
+   * pink-frosting / chocolate-drip / cherry glyph. Token NAMES are kept as
+   * "mint-*" to avoid touching 15 files' worth of class references — only
+   * the hex VALUES changed, to a blush/rose/cocoa family that matches the
+   * new mark. Read each token by its role comment, not its name.
+   */
+  --color-mint-100: #FDF4F6; /* blush-50  — page washes, light panel base */
+  --color-mint-300: #F2B3C3; /* blush-300 — hover fills, borders, and the
+                                 one accent color proven to read on both
+                                 cream (10.5:1) and cocoa-900 (8.9:1) */
+  --color-mint-600: #DC6E8B; /* rose-500  — strokes/borders only, fails AA
+                                 as text (3.16 on cream) same as before */
+  --color-mint-800: #5A371E; /* cocoa-700 — primary buttons and links.
+                                 10.16 on cream, white-on-it 10.50 */
+  /* Deeper shades for dark sections and the hero scrim.
+     white on mint-900 = 12.6, on mint-950 = 15.5 */
+  --color-mint-900: #4A2E1A; /* cocoa-800 */
+  --color-mint-950: #33200F; /* cocoa-900 */
+  --color-gold-500: #C8202E; /* cherry — decorative fills, borders and thin
+                                 rules only. 5.49 on cream but only 2.7 on
+                                 cocoa-900, so it is NEVER used as text on a
+                                 dark surface — mint-300 (blush-300) covers
+                                 that role instead, same as gold did before. */
   --color-ink:      #141414;
   --color-cream:    #FDFBF7;
-  --color-blush:    #E8759B;
-  --color-coral:    #F2865A;
+  --color-blush:    #DC6E8B; /* rose-500 — small accent dots */
+  --color-coral:    #8A5A38; /* cocoa-500 — reserved, unused today */
 
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-sans: "Jost Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
