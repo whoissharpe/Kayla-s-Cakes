@@ -7,8 +7,9 @@ downloaded or dropped in by hand.
 |---|---|---|
 | `hero-cake.webp` / `.jpg` | 99KB / 204KB | Hero still — the turntable cake, 2400×1340. Upscaled 2× with a Lanczos resample plus a light unsharp mask from the original 1600×893 generation, which was visibly soft once stretched to `object-fit: cover` on wide viewports. JPEG is the fallback for browsers without WebP. |
 | `hero-cake-spin.mp4` | 164KB | The 5-second spinning loop. 1280 wide, CRF 32, no audio, faststart. |
-| `logo-lockup.webp` | 51KB | Glyph + the real cursive wordmark + tagline, exactly as designed — **transparent**. Its white canvas was colour-keyed out (flood-filled from the edges, so only the contiguous background goes transparent — the pastry's own pale colour and the white highlights inside the artwork stay put) rather than removed with an AI background-remover, which previously deleted the wordmark text outright. Used everywhere the full lockup appears — hero badge, About — since it's the actual logo art, not a retyped substitute. |
-| `logo-mark-cutout.webp` | 30KB | Glyph only (cherry, swirl, chocolate drip), cropped tight from the same colour-keyed source. Used for the header, both faint watermarks, and the admin icons, where only the mark — not the full wordmark — fits. |
+| `logo-lockup.webp` | 51KB | Glyph + the real cursive wordmark + "BAKERY" line, exactly as designed — **transparent**. Its white canvas was colour-keyed out from the edges inward, and any letter counter (the enclosed white inside a loop like the "a" or "e") that bordered black ink rather than coloured artwork was cleared too — so the pastry's own pale colour and the gloss highlights on the frosting/cherry stay opaque, but no white halo is left sitting inside the letters. Used everywhere the full lockup appears — hero badge, About — since it's the actual logo art, not a retyped substitute. |
+| `logo-lockup-reversed.webp` | 47KB | The same lockup with the wordmark's near-black linework knocked out to cream, so it stays legible on the dark footer. Every other pixel — the glyph's own colours, the gloss highlights — is untouched. Used only in the footer brand link, replacing the retyped `Yellowtail`-font substitute this file used to describe. |
+| `logo-mark-cutout.webp` | 23KB | Glyph only (cherry, swirl, chocolate drip), cropped tight from the same colour-keyed source. Used for the header, both faint watermarks, and the admin icons, where only the mark — not the full wordmark — fits. |
 | `categories/*.webp` | 8–29KB each | The six "What she makes" cards. |
 | `og.jpg` | 25KB | Social share image, exactly 1200×630. |
 | `favicon.png` | 20KB | 512×512. |
@@ -17,13 +18,10 @@ downloaded or dropped in by hand.
 `public/` totals about 684KB. CI fails if any single file exceeds 800KB — see
 the guard in `.github/workflows/ci.yml`.
 
-**The footer is the one exception.** Its background is dark, and the logo's
-own wordmark linework is near-black — illegible there regardless of
-transparency. So the footer sets the name as real text instead of using
-`logo-lockup.webp`, in `Yellowtail` (`@fontsource/yellowtail`, self-hosted),
-a bold connected script chosen to read close to the logo's own cursive
-rather than the site's serif/sans pairing. Every other placement uses the
-actual logo image, never a retyped stand-in.
+**The footer** uses `logo-lockup-reversed.webp` — the real logo art, with only
+the wordmark's ink colour swapped to cream so it survives the dark
+background. Every placement on the site uses the actual logo image, never a
+retyped stand-in.
 
 ## Provenance
 

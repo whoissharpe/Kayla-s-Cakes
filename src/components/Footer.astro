@@ -10,16 +10,11 @@ const year = new Date().getFullYear();
   <div class="ftr__inner">
     <div class="ftr__top">
       <a href="/" class="ftr__brand">
-        {/* The logo's own wordmark art is near-black linework, unreadable on
-            this dark background — everywhere else on the site uses the real
-            logo image, but here it has to be real text set in a script font
-            that stands in for the logo's cursive rather than the body serif. */}
-        <img src="/brand/logo-mark-cutout.webp" alt="" aria-hidden="true"
-             width="528" height="585" loading="lazy" class="ftr__mark" />
-        <span class="ftr__wordmark">
-          {site.name}
-          <span class="ftr__tag">{site.tagline}</span>
-        </span>
+        {/* The logo's own wordmark linework is near-black, so this dark
+            background needs the colour-knocked-out variant (cream ink,
+            everything else untouched) rather than a retyped substitute. */}
+        <img src="/brand/logo-lockup-reversed.webp" alt={`${site.name} — ${site.tagline}`}
+             width="800" height="625" loading="lazy" class="ftr__brandmark" />
       </a>
 
       <div class="ftr__pitch">
@@ -108,27 +103,9 @@ const year = new Date().getFullYear();
     align-items: center;
     gap: 1rem;
   }
-  .ftr__mark {
-    width: clamp(3.5rem, 7vw, 4.75rem);
+  .ftr__brandmark {
+    width: clamp(9rem, 18vw, 12.5rem);
     height: auto;
-  }
-  .ftr__wordmark {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-script);
-    font-size: clamp(2rem, 4.2vw, 2.6rem);
-    font-weight: 400;
-    line-height: 1;
-    color: #fff;
-  }
-  .ftr__tag {
-    font-family: var(--font-sans);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-mint-300);
-    margin-top: 0.5rem;
   }
 
   .ftr__pitch { display: grid; gap: 1.25rem; justify-items: start; }
