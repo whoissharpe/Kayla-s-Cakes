@@ -235,15 +235,23 @@ work.
 
 ## Accessibility notes
 
-Contrast was measured, not eyeballed. Two results changed the palette:
+Contrast was measured, not eyeballed. The tokens are still named `mint-*`
+in `src/styles/global.css` — only the hex values changed in the 2026-09-01
+rebrand, to a blush/rose/cocoa family matching the new pink-frosting logo.
+Read each token by the role comment next to it, not by its name.
 
-- **`mint-600` (#3FA697) fails WCAG AA as text or as a button background** —
-  2.86:1 on cream, 2.95:1 behind white text. Buttons and links use
-  **`mint-800` (#22685D)** instead (6.34:1 and 6.55:1). `mint-600` is only
-  used for borders, icon strokes and hover fills.
-- **`gold-500` (#C9A24B) fails on cream (2.32:1)** and on mint-800 (2.73:1).
-  It passes only on `ink` (7.68:1), so gold is restricted to thin rules, small
-  marks, and text on dark backgrounds.
+- **`mint-600` (#DC6E8B, a rose pink) fails WCAG AA as text or as a button
+  background** — 3.16:1 behind white text, same failure mode the old teal
+  value had. Buttons and links use **`mint-800` (#5A371E, cocoa)** instead
+  (10.16:1 on cream, white-on-it 10.50:1). `mint-600` is only used for
+  borders, icon strokes and hover fills.
+- **`gold-500` (#C8202E, now a cherry red) fails on the dark `mint-950`
+  surface (2.73:1)**, the same failure gold had on cream before. It passes
+  on cream (5.49:1), so it stays decorative — thin rules, small marks — and
+  is never used as text on a dark background. The two spots that need an
+  accent color *on* dark (the footer's link-hover state and the gallery's
+  placeholder badge) use `mint-300` (blush) instead, which reads at 8.9:1
+  and 10.5:1 respectively.
 
 Also in place: skip link, visible focus rings, semantic landmarks, labelled
 form fields with associated errors, a keyboard-navigable lightbox, and a full

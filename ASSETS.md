@@ -5,10 +5,10 @@ downloaded or dropped in by hand.
 
 | File | Size | What it is |
 |---|---|---|
-| `hero-cake.webp` / `.jpg` | 45KB / 94KB | Hero still — the turntable cake. JPEG is the fallback for browsers without WebP. |
-| `hero-cake-spin.mp4` | 194KB | The 5-second spinning loop. 1280 wide, CRF 32, no audio, faststart. |
-| `logo-lockup.webp` | 25KB | Full circular lockup with the wordmark and tagline. |
-| `logo-mark.webp` | 11KB | Mark only — used in the header and the admin sign-in. |
+| `hero-cake.webp` / `.jpg` | 47KB / 100KB | Hero still — the turntable cake. JPEG is the fallback for browsers without WebP. |
+| `hero-cake-spin.mp4` | 164KB | The 5-second spinning loop. 1280 wide, CRF 32, no audio, faststart. |
+| `logo-lockup.webp` | 35KB | Full mark + wordmark ("Kayla's Cakes / baked with love"). Left **opaque** — its white canvas is imperceptible against the site's cream, so it's only used on light sections (hero badge, About). |
+| `logo-mark-cutout.webp` | 23KB | Glyph only (cherry, swirl, chocolate drip), **transparent**. Used in the header, both watermarks, and the footer — anywhere the surface is dark or tinted. |
 | `categories/*.webp` | 8–29KB each | The six "What she makes" cards. |
 | `og.jpg` | 25KB | Social share image, exactly 1200×630. |
 | `favicon.png` | 20KB | 512×512. |
