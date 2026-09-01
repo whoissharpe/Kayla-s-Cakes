@@ -24,23 +24,13 @@ import { site } from '../data/site';
   </div>
 
   <div class="hero__inner">
-    <div class="hero__brand">
-      {/* The mark is transparent so it sits on the photo with no card behind
-          it (see logo-mark-cutout.webp in ASSETS.md). The wordmark is real
-          text rather than baked into the image, same as the footer. */}
-      <img
-        src="/brand/logo-mark-cutout.webp"
-        alt=""
-        aria-hidden="true"
-        class="hero__badge"
-        width="407" height="410"
-        fetchpriority="high"
-      />
-      <span class="hero__wordmark">
-        {site.name}
-        <span class="hero__wordmark-tag">{site.tagline}</span>
-      </span>
-    </div>
+    <img
+      src="/brand/logo-lockup.webp"
+      alt={`${site.name} — ${site.tagline}`}
+      class="hero__badge"
+      width="800" height="1071"
+      fetchpriority="high"
+    />
 
     <p class="hero__eyebrow">Jacksonville · Ponte Vedra · St. Augustine · Nocatee</p>
 
@@ -161,38 +151,14 @@ import { site } from '../data/site';
   }
   @media (min-width: 64rem) { .hero__inner > * { max-width: 36rem; } }
 
-  .hero__brand {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    margin-bottom: 1.5rem;
-  }
-
   .hero__badge {
-    width: clamp(3.75rem, 7vw, 5rem);
+    width: clamp(7rem, 14vw, 11.5rem);
     height: auto;
-    /* No ring, no plate — the mark is transparent and sits directly on the
-       page. Anything added here reads as a second border against the
-       logo's own artwork. */
-  }
-
-  .hero__wordmark {
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
-    line-height: 1.1;
-    color: var(--color-ink);
-  }
-  .hero__wordmark-tag {
-    font-family: var(--font-sans);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--color-mint-800);
-    margin-top: 0.35rem;
+    margin-bottom: 1.35rem;
+    /* No ring, no plate — the lockup's own canvas is transparent (colour-keyed
+       from its white background, not baked in) so it sits directly on the
+       page. Anything added here reads as a second border against the logo's
+       own artwork. */
   }
 
   .hero__eyebrow {

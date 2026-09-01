@@ -5,16 +5,17 @@ const year = new Date().getFullYear();
 
 <footer class="ftr">
   <img src="/brand/logo-mark-cutout.webp" alt="" class="ftr__watermark" aria-hidden="true"
-       width="600" height="600" loading="lazy" />
+       width="528" height="585" loading="lazy" />
 
   <div class="ftr__inner">
     <div class="ftr__top">
       <a href="/" class="ftr__brand">
-        {/* The glyph is transparent and safe on any surface; the wordmark
-            itself is real text here (and everywhere else it appears) rather
-            than baked into a raster image. */}
+        {/* The logo's own wordmark art is near-black linework, unreadable on
+            this dark background — everywhere else on the site uses the real
+            logo image, but here it has to be real text set in a script font
+            that stands in for the logo's cursive rather than the body serif. */}
         <img src="/brand/logo-mark-cutout.webp" alt="" aria-hidden="true"
-             width="120" height="82" loading="lazy" class="ftr__mark" />
+             width="528" height="585" loading="lazy" class="ftr__mark" />
         <span class="ftr__wordmark">
           {site.name}
           <span class="ftr__tag">{site.tagline}</span>
@@ -114,10 +115,10 @@ const year = new Date().getFullYear();
   .ftr__wordmark {
     display: flex;
     flex-direction: column;
-    font-family: var(--font-display);
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    font-weight: 600;
-    line-height: 1.1;
+    font-family: var(--font-script);
+    font-size: clamp(2rem, 4.2vw, 2.6rem);
+    font-weight: 400;
+    line-height: 1;
     color: #fff;
   }
   .ftr__tag {
@@ -127,7 +128,7 @@ const year = new Date().getFullYear();
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--color-mint-300);
-    margin-top: 0.35rem;
+    margin-top: 0.5rem;
   }
 
   .ftr__pitch { display: grid; gap: 1.25rem; justify-items: start; }
