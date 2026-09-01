@@ -132,13 +132,18 @@ import { site } from '../data/site';
         rgb(253 251 247 / 0) 84%);
   }
   @media (max-width: 63.99rem) {
-    /* No room beside the cake on small screens — wash the whole frame. */
+    /* No room beside the cake on small screens, but the photo is the whole
+       point of a hero — wash just enough at top and bottom for the badge
+       and copy to stay legible, and let the cake itself show through in
+       the middle instead of nearly disappearing under solid cream. */
     .hero__scrim {
       background:
         linear-gradient(180deg,
-          rgb(253 251 247 / 0.97) 0%,
-          rgb(253 251 247 / 0.92) 55%,
-          rgb(253 251 247 / 0.96) 100%);
+          rgb(253 251 247 / 0.82) 0%,
+          rgb(253 251 247 / 0.55) 22%,
+          rgb(253 251 247 / 0.5) 45%,
+          rgb(253 251 247 / 0.86) 75%,
+          rgb(253 251 247 / 0.95) 100%);
     }
   }
 
