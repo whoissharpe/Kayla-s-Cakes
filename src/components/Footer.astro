@@ -73,7 +73,7 @@ const year = new Date().getFullYear();
     position: relative;
     isolation: isolate;
     overflow: hidden;
-    background: var(--color-mint-950);
+    background: var(--color-footer-bg);
     color: #fff;
   }
 
@@ -122,7 +122,7 @@ const year = new Date().getFullYear();
     padding: 0 1.75rem;
     border-radius: var(--radius-btn);
     background: var(--color-mint-300);
-    color: var(--color-mint-950);
+    color: var(--color-footer-bg);
     font-weight: 600;
     transition: background-color 200ms ease;
   }
@@ -154,7 +154,8 @@ const year = new Date().getFullYear();
     display: grid;
     gap: 0.75rem;
   }
-  /* gold on mint-950 is 6.38 — legible, unlike gold on cream */
+  /* gold reads fine as a thin decorative rule on this dark background,
+     just never as body text (see the token comment in global.css) */
   .ftr__legal { max-width: 60ch; font-size: 0.75rem; line-height: 1.6; color: rgb(255 255 255 / 0.6); }
   .ftr__copy { font-size: 0.75rem; color: rgb(255 255 255 / 0.5); }
 </style>

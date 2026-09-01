@@ -41,6 +41,10 @@
      white on mint-900 = 12.6, on mint-950 = 15.5 */
   --color-mint-900: #4A2E1A; /* cocoa-800 */
   --color-mint-950: #33200F; /* cocoa-900 */
+  --color-footer-bg: #3B0E22; /* deep berry, footer background only — swapped
+                                  out from cocoa-900 at the client's request
+                                  ("don't like that brown"). white on it =
+                                  16.5:1, blush-300 (mint-300) on it = 9.4:1 */
   --color-gold-500: #C8202E; /* cherry — decorative fills, borders and thin
                                  rules only. 5.49 on cream but only 2.7 on
                                  cocoa-900, so it is NEVER used as text on a
