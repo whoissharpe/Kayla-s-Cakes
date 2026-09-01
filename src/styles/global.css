@@ -3,11 +3,6 @@
 /* Self-hosted variable fonts (no external requests) */
 @import "@fontsource-variable/fraunces/index.css";
 @import "@fontsource-variable/jost/index.css";
-/* Bold connected script — only for standing in for the logo's own cursive
-   wordmark where the art itself can't be used (dark surfaces; the logo's
-   linework is near-black). Everywhere else, the actual logo image is used
-   instead of retyping it in any font. */
-@import "@fontsource/yellowtail/400.css";
 
 /* ---------------------------------------------------------------------------
    Kayla's Cakes brand tokens
@@ -57,7 +52,6 @@
 
   --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
   --font-sans: "Jost Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-script: "Yellowtail", cursive;
 
   --radius-card: 1rem;
   --radius-btn: 0.625rem;
