@@ -1,0 +1,11 @@
+{
+  "_readme": "Add photos here — see README 'Adding gallery photos'. Drop the image in public/gallery/, then add an entry below. Nothing else needs editing. Every entry NEEDS an alt description for screen readers.",
+  "photos": [
+    { "src": "/gallery/placeholder-01.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 1500, "placeholder": true },
+    { "src": "/gallery/placeholder-02.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 900,  "placeholder": true },
+    { "src": "/gallery/placeholder-03.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 1200, "placeholder": true },
+    { "src": "/gallery/placeholder-04.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 1500, "placeholder": true },
+    { "src": "/gallery/placeholder-05.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 900,  "placeholder": true },
+    { "src": "/gallery/placeholder-06.webp", "alt": "Placeholder — replace with a real photo", "width": 1200, "height": 1200, "placeholder": true }
+  ]
+}

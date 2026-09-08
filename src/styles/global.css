@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Self-hosted variable fonts (no external requests) */
+@import "@fontsource-variable/fraunces/index.css";
+@import "@fontsource-variable/jost/index.css";
+
+/* ---------------------------------------------------------------------------
+   Kayla's Cakes brand tokens
+
+   CONTRAST RULES — verified with WCAG 2.1 math, do not "improve" these:
+     ink       on cream    17.82  body text
+     mint-800  on cream    12.04  links, buttons (as bg w/ white text: 12.44)
+     mint-600  on cream     2.86  FAILS — strokes/borders/hover fills ONLY, never text
+     gold-500  on cream     2.32  FAILS — thin rules + small marks only
+     gold-500  on ink       3.25  gold is a decorative fill only — never text,
+                                   on any background (fails everywhere here)
+     white     on mint-900 14.15  hero scrim, dark sections
+     blush / coral on cream 2.73 / 7.14  blush FAILS as text; coral (berry-500)
+                                          passes but is reserved, unused today
+--------------------------------------------------------------------------- */
+@theme {
+  /*
+   * Rebrand (2026-09-01): the logo moved from a mint watercolor mark to a
+   * pink-frosting / chocolate-drip / cherry glyph. Token NAMES are kept as
+   * "mint-*" to avoid touching 15 files' worth of class references — only
+   * the hex VALUES changed, to a blush/rose/berry family that matches the
+   * new mark. Read each token by its role comment, not its name.
+   *
+   * Second pass (same day): the client didn't like the cocoa/brown the
+   * 800/900/950 shades first landed on ("replace all the brown with the
+   * berry"), so those three plus the reserved coral swatch were re-hued to
+   * the same deep-berry family as the footer background, at the same
+   * lightness steps — hue/sat taken from --color-footer-bg, not re-picked.
+   */
+  --color-mint-100: #FDF4F6; /* blush-50  — page washes, light panel base */
+  --color-mint-300: #F2B3C3; /* blush-300 — hover fills, borders, and the
+                                 one accent color proven to read on both
+                                 cream (10.5:1) and berry-900 (8.1:1) */
+  --color-mint-600: #DC6E8B; /* rose-500  — strokes/borders only, fails AA
+                                 as text (3.16 on cream) same as before */
+  --color-mint-800: #611738; /* berry-700 — primary buttons and links.
+                                 12.04 on cream, white-on-it 12.44 */
+  /* Deeper shades for dark sections and the hero scrim.
+     white on mint-900 = 14.15, on mint-950 = 16.51 */
+  --color-mint-900: #51132F; /* berry-800 */
+  --color-mint-950: #3B0E22; /* berry-900 — identical to --color-footer-bg;
+                                 dark sections and the footer are meant to
+                                 read as the same berry, not two darks */
+  --color-footer-bg: #3B0E22; /* deep berry, swapped out from cocoa-900 at
+                                  the client's request ("don't like that
+                                  brown"). white on it = 16.5:1, blush-300
+                                  (mint-300) on it = 8.1:1 */
+  --color-gold-500: #C8202E; /* cherry — decorative fills, borders and thin
+                                 rules only. 5.49 on cream but only 2.5 on
+                                 berry-900, so it is NEVER used as text on a
+                                 dark surface — mint-300 (blush-300) covers
+                                 that role instead, same as gold did before. */
+  --color-ink:      #141414;
+  --color-cream:    #FDFBF7;
+  --color-blush:    #DC6E8B; /* rose-500 — small accent dots */
+  --color-coral:    #9D255A; /* berry-500 — reserved, unused today */
+
+  --font-display: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-sans: "Jost Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: 1rem;
+  --radius-btn: 0.625rem;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* keep anchored sections clear of the sticky header */
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background-color: var(--color-cream);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "SOFT" 20, "WONK" 1;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+
+  /* Visible focus everywhere — never remove */
+  :focus-visible {
+    outline: 3px solid var(--color-mint-800);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--color-mint-800);
+    color: #fff;
+    border-radius: 0 0 var(--radius-btn) 0;
+  }
+  .skip-link:focus { left: 0; }
+
+  /*
+   * Missing-image state. Until the generated assets are dropped in (see
+   * ASSETS.md) these files 404, and a page full of broken-image icons reads
+   * as "this site is broken" rather than "these photos aren't in yet".
+   * Fade the image out and let a calm branded panel stand in its place.
+   */
+  img[data-missing] {
+    opacity: 0;
+  }
+  :has(> img[data-missing]),
+  :has(> picture > img[data-missing]) {
+    position: relative;
+    background: repeating-linear-gradient(
+      45deg,
+      var(--color-mint-100) 0 12px,
+      #fff 12px 24px
+    );
+  }
+  :has(> img[data-missing])::after,
+  :has(> picture > img[data-missing])::after {
+    content: 'Photo coming soon';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-mint-800);
+    pointer-events: none;
+  }
+
+  /* Pages without a full-bleed hero must clear the fixed header */
+  .has-fixed-header { padding-top: 4.9rem; }
+  @media (min-width: 64rem) { .has-fixed-header { padding-top: 5.6rem; } }
+
+  /* Thin gold rule — decorative, aria-hidden at call sites */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold-500), transparent);
+    opacity: 0.7;
+  }
+}

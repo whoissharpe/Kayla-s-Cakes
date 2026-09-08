@@ -1,0 +1,165 @@
+---
+import Section from './Section.astro';
+import { categories } from '../data/categories';
+---
+<Section
+  id="what-she-makes"
+  eyebrow="What she makes"
+  title="A little of everything sweet"
+  lede="Every order is made to fit the party it's going to. If you don't see what you're after, just ask — she'll tell you straight whether she can do it."
+>
+  <ul role="list" class="cards">
+    {categories.map((c, i) => (
+      <li class="card">
+        <a href="/order" class="card__link">
+          <div class:list={['card__media', !c.image && 'card__media--blank']}>
+            {c.image
+              ? <img src={c.image} alt="" width="800" height="600" loading="lazy" decoding="async" class="card__img" />
+              : <span class="card__glyph" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>}
+            {c.image && <span class="card__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>}
+          </div>
+          <div class="card__body">
+            <h3 class="card__title">{c.title}</h3>
+            <p class="card__blurb">{c.blurb}</p>
+            <span class="card__more" aria-hidden="true">Order this <span class="card__arrow">→</span></span>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</Section>
+
+<style>
+  .cards { display: grid; gap: 1.5rem; }
+  @media (min-width: 44rem) { .cards { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 68rem) { .cards { grid-template-columns: repeat(3, 1fr); gap: 1.75rem; } }
+
+  .card { display: flex; }
+
+  /* An odd count leaves a lonely card on the last row — let the final one
+     run the full width and lay out horizontally instead. */
+  @media (min-width: 68rem) {
+    .cards > .card:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+    .cards > .card:last-child:nth-child(3n + 1) .card__link { flex-direction: row; }
+    .cards > .card:last-child:nth-child(3n + 1) .card__media { flex: 0 0 38%; aspect-ratio: auto; }
+    .cards > .card:last-child:nth-child(3n + 1) .card__body { justify-content: center; padding: 2.5rem; }
+    .cards > .card:last-child:nth-child(3n + 1) .card__title { font-size: 1.5rem; }
+    .cards > .card:last-child:nth-child(3n + 1) .card__blurb { max-width: 46ch; font-size: 1rem; }
+  }
+  .card__link {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: #fff;
+    border: 1px solid rgb(34 104 93 / 0.12);
+    transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease;
+  }
+  .card__link:hover {
+    transform: translateY(-4px);
+    border-color: var(--color-mint-300);
+    box-shadow: 0 2px 6px rgb(18 63 56 / 0.05), 0 22px 50px rgb(18 63 56 / 0.14);
+  }
+
+  .card__media { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-mint-100); }
+
+  /*
+   * No photo yet. Rather than a generated stand-in — which reads as fake and
+   * undersells real work — each panel is a numbered watercolour wash. The
+   * gradients vary per card so the grid doesn't read as six copies of one
+   * placeholder. Set an image on the category and this disappears.
+   */
+  .card__media--blank {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(110% 80% at 22% 12%, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0) 58%),
+      linear-gradient(145deg, var(--color-mint-100) 0%, var(--color-mint-300) 100%);
+  }
+  .cards > .card:nth-child(2) .card__media--blank {
+    background:
+      radial-gradient(110% 80% at 78% 18%, rgb(255 255 255 / 0.95) 0%, rgb(255 255 255 / 0) 60%),
+      linear-gradient(200deg, #FDF3F6 0%, var(--color-mint-100) 60%, var(--color-mint-300) 100%);
+  }
+  .cards > .card:nth-child(3) .card__media--blank {
+    background:
+      radial-gradient(100% 90% at 50% 100%, rgb(255 255 255 / 0.9) 0%, rgb(255 255 255 / 0) 55%),
+      linear-gradient(115deg, var(--color-mint-300) 0%, var(--color-mint-100) 70%);
+  }
+  .cards > .card:nth-child(4) .card__media--blank {
+    background:
+      radial-gradient(120% 90% at 15% 85%, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0) 55%),
+      linear-gradient(165deg, var(--color-mint-100) 0%, #F6E9EE 100%);
+  }
+  .cards > .card:nth-child(5) .card__media--blank {
+    background:
+      radial-gradient(110% 85% at 80% 80%, rgb(255 255 255 / 0.9) 0%, rgb(255 255 255 / 0) 58%),
+      linear-gradient(135deg, var(--color-mint-300) 0%, #FDF3F6 100%);
+  }
+  .cards > .card:nth-child(6) .card__media--blank {
+    background:
+      radial-gradient(110% 80% at 35% 20%, rgb(255 255 255 / 0.94) 0%, rgb(255 255 255 / 0) 55%),
+      linear-gradient(215deg, var(--color-mint-100) 0%, var(--color-mint-300) 100%);
+  }
+  .cards > .card:nth-child(7) .card__media--blank {
+    background:
+      radial-gradient(90% 120% at 20% 50%, rgb(255 255 255 / 0.92) 0%, rgb(255 255 255 / 0) 60%),
+      linear-gradient(120deg, #F6E9EE 0%, var(--color-mint-100) 55%, var(--color-mint-300) 100%);
+  }
+
+  /* Big editorial numeral — the panel is the design, not a missing image */
+  .card__glyph {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 7vw, 5rem);
+    font-weight: 600;
+    line-height: 1;
+    color: #fff;
+    opacity: 0.85;
+    text-shadow: 0 2px 14px rgb(18 63 56 / 0.16);
+    transition: transform 500ms ease;
+  }
+  .card__link:hover .card__glyph { transform: scale(1.06); }
+  .card__img { width: 100%; height: 100%; object-fit: cover; transition: transform 600ms ease; }
+  .card__link:hover .card__img { transform: scale(1.05); }
+
+  /* Numbered like a menu — small thing, but it makes the grid feel authored */
+  .card__num {
+    position: absolute;
+    left: 0.9rem;
+    top: 0.9rem;
+    display: grid;
+    place-items: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.5rem;
+    border-radius: 999px;
+    background: rgb(11 42 37 / 0.82);
+    backdrop-filter: blur(6px);
+    color: var(--color-mint-100);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .card__body { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.5rem; flex: 1; }
+  .card__title { font-size: 1.2rem; font-weight: 600; }
+  .card__blurb { font-size: 0.92rem; line-height: 1.6; color: rgb(20 20 20 / 0.7); }
+
+  .card__more {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--color-mint-800);
+  }
+  .card__arrow { display: inline-block; transition: transform 250ms ease; }
+  .card__link:hover .card__arrow { transform: translateX(4px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card__link, .card__img, .card__arrow { transition: none; }
+    .card__link:hover { transform: none; }
+    .card__link:hover .card__img, .card__link:hover .card__arrow { transform: none; }
+  }
+</style>

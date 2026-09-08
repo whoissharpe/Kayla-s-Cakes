@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: https://kaylascakes.pages.dev/sitemap-index.xml

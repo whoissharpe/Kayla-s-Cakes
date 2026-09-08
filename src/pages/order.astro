@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import OrderForm from '../components/OrderForm.astro';
+import { site } from '../data/site';
+---
+<Base
+  title={`Order a cake — ${site.name}`}
+  description={`Send Kayla your cake details and she'll get back to you with an invoice. ${site.serviceArea}.`}
+>
+  <div class="bg-mint-100">
+    <div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20">
+      <p class="text-xs font-medium tracking-[0.28em] text-mint-800 uppercase">Order</p>
+      <h1 class="mt-3 text-4xl font-semibold sm:text-5xl">Tell her about your cake</h1>
+      <p class="mt-4 max-w-2xl text-base leading-relaxed text-ink/75">
+        Fill this in with whatever you know so far. Half an idea is plenty to
+        start with — she'll follow up with the rest.
+      </p>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-6xl px-4 py-14 sm:px-6 sm:py-16">
+    <OrderForm />
+  </div>
+</Base>

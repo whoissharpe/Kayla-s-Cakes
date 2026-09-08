@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+---
+<Base
+  title={`Page not found — ${site.name}`}
+  description="That page doesn't exist."
+  noindex
+>
+  <section class="mx-auto flex min-h-[60svh] max-w-2xl flex-col justify-center px-4 py-20 text-center sm:px-6">
+    <p class="text-xs font-medium tracking-[0.28em] text-mint-800 uppercase">
+      404
+    </p>
+    <h1 class="mt-4 text-4xl font-semibold sm:text-5xl">
+      This one's not on the menu
+    </h1>
+    <p class="mx-auto mt-4 max-w-md text-base leading-relaxed text-ink/75">
+      That page doesn't exist — it may have moved, or the link might have a
+      typo in it. Everything's still one click away.
+    </p>
+
+    <div class="mt-9 flex flex-wrap justify-center gap-3">
+      <a href="/"
+         class="inline-flex min-h-12 items-center rounded-btn bg-mint-800 px-6 font-medium text-white transition-colors hover:bg-ink">
+        Back to the homepage
+      </a>
+      <a href="/order"
+         class="inline-flex min-h-12 items-center rounded-btn border border-mint-600 bg-cream px-6 font-medium text-mint-800 transition-colors hover:bg-mint-100">
+        Order a cake
+      </a>
+    </div>
+
+    <p class="mt-10 text-sm text-ink/65">
+      Looking for something specific? Text
+      <a class="text-mint-800 underline underline-offset-2" href={site.phoneHref}>{site.phone}</a>
+      and she'll point you the right way.
+    </p>
+  </section>
+</Base>

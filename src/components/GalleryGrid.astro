@@ -1,0 +1,221 @@
+---
+import galleryData from '../data/gallery.json';
+
+interface Props { limit?: number; }
+const { limit } = Astro.props;
+
+type Photo = {
+  src: string; alt: string; width: number; height: number; placeholder?: boolean;
+};
+const all = galleryData.photos as Photo[];
+const photos = limit ? all.slice(0, limit) : all;
+---
+
+<div class="gallery" data-gallery>
+  {photos.map((p, i) => (
+    <figure class="gallery__item">
+      <button
+        type="button"
+        class="gallery__btn"
+        data-index={i}
+        aria-label={`Open image ${i + 1} of ${photos.length}: ${p.alt}`}
+      >
+        <img
+          src={p.src}
+          alt={p.alt}
+          width={p.width}
+          height={p.height}
+          loading="lazy"
+          decoding="async"
+          class="gallery__img"
+        />
+        {p.placeholder && (
+          <span class="gallery__badge">Placeholder</span>
+        )}
+      </button>
+    </figure>
+  ))}
+</div>
+
+<!-- Lightbox. <dialog> gives focus trapping and Esc for free. -->
+<dialog class="lightbox" data-lightbox aria-label="Photo viewer">
+  <div class="lightbox__bar">
+    <p class="lightbox__count" data-lb-count aria-live="polite"></p>
+    <button type="button" class="lightbox__close" data-lb-close aria-label="Close viewer">✕</button>
+  </div>
+  <img class="lightbox__img" data-lb-img alt="" />
+  <p class="lightbox__cap" data-lb-cap></p>
+  <button type="button" class="lightbox__nav lightbox__nav--prev" data-lb-prev aria-label="Previous photo">‹</button>
+  <button type="button" class="lightbox__nav lightbox__nav--next" data-lb-next aria-label="Next photo">›</button>
+</dialog>
+
+<script is:inline define:vars={{ photos }}>
+  (() => {
+    const dlg = document.querySelector('[data-lightbox]');
+    const grid = document.querySelector('[data-gallery]');
+    if (!dlg || !grid) return;
+
+    const img = dlg.querySelector('[data-lb-img]');
+    const cap = dlg.querySelector('[data-lb-cap]');
+    const count = dlg.querySelector('[data-lb-count]');
+    let i = 0;
+    let opener = null;
+
+    const render = () => {
+      const p = photos[i];
+      img.src = p.src;
+      img.alt = p.alt;
+      cap.textContent = p.alt;
+      count.textContent = `${i + 1} of ${photos.length}`;
+    };
+    const open = (n, btn) => {
+      i = n;
+      opener = btn;
+      render();
+      dlg.showModal();
+    };
+    const step = (d) => {
+      i = (i + d + photos.length) % photos.length;
+      render();
+    };
+
+    grid.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-index]');
+      if (btn) open(Number(btn.dataset.index), btn);
+    });
+
+    dlg.querySelector('[data-lb-close]').addEventListener('click', () => dlg.close());
+    dlg.querySelector('[data-lb-prev]').addEventListener('click', () => step(-1));
+    dlg.querySelector('[data-lb-next]').addEventListener('click', () => step(1));
+
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); step(1); }
+    });
+
+    // Click the backdrop (outside the image) to dismiss
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+
+    // Return focus where the user left it
+    dlg.addEventListener('close', () => opener?.focus());
+  })();
+</script>
+
+<style>
+  /* Masonry via CSS columns — no JS layout, no reflow thrash */
+  .gallery {
+    column-count: 2;
+    column-gap: 1rem;
+  }
+  @media (min-width: 40rem) { .gallery { column-count: 2; column-gap: 1.25rem; } }
+  @media (min-width: 64rem) { .gallery { column-count: 3; column-gap: 1.5rem; } }
+
+  .gallery__item {
+    break-inside: avoid;
+    margin: 0 0 1rem;
+  }
+  @media (min-width: 64rem) { .gallery__item { margin-bottom: 1.5rem; } }
+
+  .gallery__btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-card);
+    background: var(--color-mint-100);
+    cursor: zoom-in;
+  }
+
+  .gallery__img {
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: transform 400ms ease;
+  }
+  .gallery__btn:hover .gallery__img { transform: scale(1.03); }
+
+  .gallery__badge {
+    position: absolute;
+    left: 0.6rem;
+    top: 0.6rem;
+    border-radius: 0.375rem;
+    background: var(--color-ink);
+    color: var(--color-mint-300); /* cherry fails AA on ink at small sizes (3.25); blush reads at 10.5 */
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .lightbox {
+    max-width: min(92vw, 60rem);
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-card);
+    background: var(--color-cream);
+    color: var(--color-ink);
+    overflow: visible;
+  }
+  .lightbox::backdrop { background: rgb(20 20 20 / 0.82); }
+
+  .lightbox__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+  .lightbox__count { font-size: 0.8rem; color: rgb(20 20 20 / 0.6); }
+  .lightbox__close {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 9999px;
+    font-size: 1rem;
+    background: var(--color-mint-100);
+  }
+  .lightbox__close:hover { background: var(--color-mint-300); }
+
+  .lightbox__img {
+    display: block;
+    width: 100%;
+    max-height: 72vh;
+    object-fit: contain;
+    background: var(--color-mint-100);
+  }
+  .lightbox__cap {
+    padding: 0.85rem 1rem 1.1rem;
+    font-size: 0.85rem;
+    color: rgb(20 20 20 / 0.72);
+  }
+
+  .lightbox__nav {
+    position: absolute;
+    top: 50%;
+    translate: 0 -50%;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 9999px;
+    background: var(--color-cream);
+    color: var(--color-ink);
+    font-size: 1.5rem;
+    line-height: 1;
+    box-shadow: 0 4px 16px rgb(20 20 20 / 0.25);
+  }
+  .lightbox__nav--prev { left: -1.25rem; }
+  .lightbox__nav--next { right: -1.25rem; }
+  @media (max-width: 40rem) {
+    .lightbox__nav--prev { left: 0.35rem; }
+    .lightbox__nav--next { right: 0.35rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gallery__img { transition: none; }
+    .gallery__btn:hover .gallery__img { transform: none; }
+  }
+</style>
